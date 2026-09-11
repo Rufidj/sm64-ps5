@@ -23,6 +23,20 @@
 #include "text_strings.h"
 #include "types.h"
 
+#ifdef SM64_PS5_LANGUAGE
+/* The text in the language the player chose (ps5/lang/ps5_lang.c). */
+#include "ps5_lang.h"
+#define PS5_DIALOG_TABLE      ps5_lang_dialog_table()
+#define PS5_COURSE_NAME_TABLE ps5_lang_course_name_table()
+#define PS5_ACT_NAME_TABLE    ps5_lang_act_name_table()
+#define PS5_LANG_STR(str)     ps5_lang_string(str)
+#else
+#define PS5_DIALOG_TABLE      segmented_to_virtual(seg2_dialog_table)
+#define PS5_COURSE_NAME_TABLE segmented_to_virtual(seg2_course_name_table)
+#define PS5_ACT_NAME_TABLE    segmented_to_virtual(seg2_act_name_table)
+#define PS5_LANG_STR(str)     (str)
+#endif
+
 u16 gDialogColorFadeTimer;
 s8 gLastDialogLineNum;
 s32 gDialogVariable;
@@ -111,6 +125,41 @@ u8 gMenuHoldKeyIndex = 0;
 u8 gMenuHoldKeyTimer = 0;
 s32 gDialogResponse = DIALOG_RESPONSE_NONE;
 
+static Gfx *sInterpolatedDialogOffsetPos;
+static f32 sInterpolatedDialogOffset;
+static Gfx *sInterpolatedDialogRotationPos;
+static f32 sInterpolatedDialogScale;
+static f32 sInterpolatedDialogRotation;
+static Gfx *sInterpolatedDialogZoomPos;
+
+void patch_interpolated_dialog(void) {
+    Mtx *matrix;
+
+    if (sInterpolatedDialogOffsetPos != NULL) {
+        matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
+        guTranslate(matrix, 0, sInterpolatedDialogOffset, 0);
+        gSPMatrix(sInterpolatedDialogOffsetPos, VIRTUAL_TO_PHYSICAL(matrix), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        sInterpolatedDialogOffsetPos = NULL;
+    }
+    if (sInterpolatedDialogRotationPos != NULL) {
+        matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
+        guScale(matrix, 1.0 / sInterpolatedDialogScale, 1.0 / sInterpolatedDialogScale, 1.0f);
+        gSPMatrix(sInterpolatedDialogRotationPos++, VIRTUAL_TO_PHYSICAL(matrix), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
+        guRotate(matrix, sInterpolatedDialogRotation * 4.0f, 0, 0, 1.0f);
+        gSPMatrix(sInterpolatedDialogRotationPos, VIRTUAL_TO_PHYSICAL(matrix), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        sInterpolatedDialogRotationPos = NULL;
+    }
+    if (sInterpolatedDialogZoomPos != NULL) {
+        matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
+        guTranslate(matrix, 65.0 - (65.0 / sInterpolatedDialogScale), (40.0 / sInterpolatedDialogScale) - 40, 0);
+        gSPMatrix(sInterpolatedDialogZoomPos++, VIRTUAL_TO_PHYSICAL(matrix), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
+        guScale(matrix, 1.0 / sInterpolatedDialogScale, 1.0 / sInterpolatedDialogScale, 1.0f);
+        gSPMatrix(sInterpolatedDialogZoomPos, VIRTUAL_TO_PHYSICAL(matrix), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        sInterpolatedDialogZoomPos = NULL;
+    }
+}
 
 void create_dl_identity_matrix(void) {
     Mtx *matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
@@ -233,6 +282,21 @@ static u8 *alloc_ia8_text_from_i1(u16 *in, s16 width, s16 height) {
 void render_generic_char(u8 c) {
     void **fontLUT;
     void *packedTexture;
+#ifdef SM64_PS5_LANGUAGE
+    const void *esGlyph, *esMark;
+
+    if (ps5_lang_main_glyph(c, &esGlyph, &esMark)) {
+        gDPPipeSync(gDisplayListHead++);
+        gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_16b, 1, VIRTUAL_TO_PHYSICAL(esGlyph));
+        gSPDisplayList(gDisplayListHead++, dl_ia_text_tex_settings);
+        if (esMark != NULL) {
+            gDPPipeSync(gDisplayListHead++);
+            gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_16b, 1, VIRTUAL_TO_PHYSICAL(esMark));
+            gSPDisplayList(gDisplayListHead++, dl_ia_text_tex_settings);
+        }
+        return;
+    }
+#endif
 #if defined(VERSION_JP) || defined(VERSION_SH)
     void *unpackedTexture;
 #endif
@@ -370,6 +434,8 @@ void print_generic_string(s16 x, s16 y, const u8 *str) {
     UNUSED s8 mark = DIALOG_MARK_NONE; // unused in EU
     s32 strPos = 0;
     u8 lineNum = 1;
+
+    str = PS5_LANG_STR(str);
 #ifdef VERSION_EU
     s16 xCoord = x;
     s16 yCoord = 240 - y;
@@ -531,6 +597,8 @@ void print_hud_char_umlaut(s16 x, s16 y, u8 chr) {
  */
 void print_hud_lut_string(s8 hudLUT, s16 x, s16 y, const u8 *str) {
     s32 strPos = 0;
+
+    str = PS5_LANG_STR(str);
     void **hudLUT1 = segmented_to_virtual(menu_hud_lut); // Japanese Menu HUD Color font
     void **hudLUT2 = segmented_to_virtual(main_hud_lut); // 0-9 A-Z HUD Color Font
     u32 curX = x;
@@ -619,6 +687,8 @@ void print_menu_generic_string(s16 x, s16 y, const u8 *str) {
     u32 curY = y;
     void **fontLUT = segmented_to_virtual(menu_font_lut);
 
+    str = PS5_LANG_STR(str);
+
     while (str[strPos] != DIALOG_CHAR_TERMINATOR) {
         switch (str[strPos]) {
 #ifdef VERSION_EU
@@ -646,6 +716,28 @@ void print_menu_generic_string(s16 x, s16 y, const u8 *str) {
                 curX += 4;
                 break;
             default:
+#ifdef SM64_PS5_LANGUAGE
+                {
+                    const void *esGlyph, *esMark;
+
+                    if (ps5_lang_menu_glyph(str[strPos], &esGlyph, &esMark)) {
+                        gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_8b, 1, esGlyph);
+                        gDPLoadSync(gDisplayListHead++);
+                        gDPLoadBlock(gDisplayListHead++, G_TX_LOADTILE, 0, 0, 8 * 8 - 1, CALC_DXT(8, G_IM_SIZ_8b_BYTES));
+                        gSPTextureRectangle(gDisplayListHead++, curX << 2, curY << 2, (curX + 8) << 2,
+                                            (curY + 8) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
+                        if (esMark != NULL) {
+                            gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_8b, 1, esMark);
+                            gDPLoadSync(gDisplayListHead++);
+                            gDPLoadBlock(gDisplayListHead++, G_TX_LOADTILE, 0, 0, 8 * 8 - 1, CALC_DXT(8, G_IM_SIZ_8b_BYTES));
+                            gSPTextureRectangle(gDisplayListHead++, curX << 2, (curY - 4) << 2, (curX + 8) << 2,
+                                                (curY + 4) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
+                        }
+                        curX += gDialogCharWidths[str[strPos]];
+                        break;
+                    }
+                }
+#endif
                 gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_8b, 1, fontLUT[str[strPos]]);
                 gDPLoadSync(gDisplayListHead++);
                 gDPLoadBlock(gDisplayListHead++, G_TX_LOADTILE, 0, 0, 8 * 8 - 1, CALC_DXT(8, G_IM_SIZ_8b_BYTES));
@@ -765,6 +857,8 @@ s16 get_str_x_pos_from_center(s16 centerPos, u8 *str, UNUSED f32 scale) {
     s16 strPos = 0;
     f32 spacesWidth = 0.0f;
 
+    str = (u8 *) PS5_LANG_STR(str);
+
     while (str[strPos] != DIALOG_CHAR_TERMINATOR) {
         spacesWidth += gDialogCharWidths[str[strPos]];
         strPos++;
@@ -801,6 +895,8 @@ s16 get_str_x_pos_from_center_scale(s16 centerPos, u8 *str, f32 scale) {
 s16 get_string_width(u8 *str) {
     s16 strPos = 0;
     s16 width = 0;
+
+    str = (u8 *) PS5_LANG_STR(str);
 
     while (str[strPos] != DIALOG_CHAR_TERMINATOR) {
         width += gDialogCharWidths[str[strPos]];
@@ -945,6 +1041,14 @@ void render_dialog_box_type(struct DialogEntry *dialog, s8 linesPerBox) {
     switch (gDialogBoxType) {
         case DIALOG_TYPE_ROTATE: // Renders a dialog black box with zoom and rotation
             if (gDialogBoxState == DIALOG_STATE_OPENING || gDialogBoxState == DIALOG_STATE_CLOSING) {
+                sInterpolatedDialogRotationPos = gDisplayListHead;
+                if (gDialogBoxState == DIALOG_STATE_OPENING) {
+                    sInterpolatedDialogScale = gDialogBoxScale - 2 / 2;
+                    sInterpolatedDialogRotation = gDialogBoxOpenTimer - 7.5f / 2;
+                } else {
+                    sInterpolatedDialogScale = gDialogBoxScale + 2 / 2;
+                    sInterpolatedDialogRotation = gDialogBoxOpenTimer + 7.5f / 2;
+                }
                 create_dl_scale_matrix(MENU_MTX_NOPUSH, 1.0 / gDialogBoxScale, 1.0 / gDialogBoxScale, 1.0f);
                 // convert the speed into angle
                 create_dl_rotation_matrix(MENU_MTX_NOPUSH, gDialogBoxOpenTimer * 4.0f, 0, 0, 1.0f);
@@ -953,6 +1057,12 @@ void render_dialog_box_type(struct DialogEntry *dialog, s8 linesPerBox) {
             break;
         case DIALOG_TYPE_ZOOM: // Renders a dialog white box with zoom
             if (gDialogBoxState == DIALOG_STATE_OPENING || gDialogBoxState == DIALOG_STATE_CLOSING) {
+                sInterpolatedDialogZoomPos = gDisplayListHead;
+                if (gDialogBoxState == DIALOG_STATE_OPENING) {
+                    sInterpolatedDialogScale = gDialogBoxScale - 2 / 2;
+                } else {
+                    sInterpolatedDialogScale = gDialogBoxScale + 2 / 2;
+                }
                 create_dl_translation_matrix(MENU_MTX_NOPUSH, 65.0 - (65.0 / gDialogBoxScale),
                                               (40.0 / gDialogBoxScale) - 40, 0);
                 create_dl_scale_matrix(MENU_MTX_NOPUSH, 1.0 / gDialogBoxScale, 1.0 / gDialogBoxScale, 1.0f);
@@ -1235,6 +1345,8 @@ void handle_dialog_text_and_pages(s8 colorMode, struct DialogEntry *dialog, s8 l
 #ifdef VERSION_EU
         gDialogY -= gDialogScrollOffsetY;
 #else
+        sInterpolatedDialogOffset = gDialogScrollOffsetY + dialog->linesPerBox;
+        sInterpolatedDialogOffsetPos = gDisplayListHead;
         create_dl_translation_matrix(MENU_MTX_NOPUSH, 0, (f32) gDialogScrollOffsetY, 0);
 #endif
     }
@@ -1698,7 +1810,7 @@ void render_dialog_entries(void) {
             break;
     }
 #else
-    dialogTable = segmented_to_virtual(seg2_dialog_table);
+    dialogTable = PS5_DIALOG_TABLE;
 #endif
     dialog = segmented_to_virtual(dialogTable[gDialogID]);
 
@@ -2020,7 +2132,7 @@ void print_peach_letter_message(void) {
             break;
     }
 #else
-    dialogTable = segmented_to_virtual(seg2_dialog_table);
+    dialogTable = PS5_DIALOG_TABLE;
 #endif
     dialog = segmented_to_virtual(dialogTable[gDialogID]);
 
@@ -2215,8 +2327,8 @@ void render_pause_my_score_coins(void) {
     u8 starFlags;
 
 #ifndef VERSION_EU
-    courseNameTbl = segmented_to_virtual(seg2_course_name_table);
-    actNameTbl = segmented_to_virtual(seg2_act_name_table);
+    courseNameTbl = PS5_COURSE_NAME_TABLE;
+    actNameTbl = PS5_ACT_NAME_TABLE;
 #endif
 
     courseIndex = gCurrCourseNum - 1;
@@ -2507,7 +2619,7 @@ void render_pause_castle_main_strings(s16 x, s16 y) {
 #ifdef VERSION_EU
     void **courseNameTbl;
 #else
-    void **courseNameTbl = segmented_to_virtual(seg2_course_name_table);
+    void **courseNameTbl = PS5_COURSE_NAME_TABLE;
 #endif
 
 #ifdef VERSION_EU
@@ -2849,8 +2961,8 @@ void render_course_complete_lvl_info_and_hud_str(void) {
             break;
     }
 #else
-    actNameTbl = segmented_to_virtual(seg2_act_name_table);
-    courseNameTbl = segmented_to_virtual(seg2_course_name_table);
+    actNameTbl = PS5_ACT_NAME_TABLE;
+    courseNameTbl = PS5_COURSE_NAME_TABLE;
 #endif
 
     if (gLastCompletedCourseNum <= COURSE_STAGES_MAX) {

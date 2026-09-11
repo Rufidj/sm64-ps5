@@ -117,6 +117,13 @@ s32 osAiSetFrequency(u32 freq) {
     return D_8033491C / (s32) a1;
 }
 
+/* Where the EEPROM image is kept. A port whose working directory is not
+ * writable, or changes between builds, can point it somewhere stable with
+ * -DSM64_SAVE_FILE_PATH=... */
+#ifndef SM64_SAVE_FILE_PATH
+#define SM64_SAVE_FILE_PATH "sm64_save_file.bin"
+#endif
+
 s32 osEepromProbe(UNUSED OSMesgQueue *mq) {
     return 1;
 }
@@ -146,7 +153,7 @@ s32 osEepromLongRead(UNUSED OSMesgQueue *mq, u8 address, u8 *buffer, int nbytes)
         ret = 0;
     }
 #else
-    FILE *fp = fopen("sm64_save_file.bin", "rb");
+    FILE *fp = fopen(SM64_SAVE_FILE_PATH, "rb");
     if (fp == NULL) {
         return -1;
     }
@@ -176,7 +183,7 @@ s32 osEepromLongWrite(UNUSED OSMesgQueue *mq, u8 address, u8 *buffer, int nbytes
     }, content);
     s32 ret = 0;
 #else
-    FILE* fp = fopen("sm64_save_file.bin", "wb");
+    FILE* fp = fopen(SM64_SAVE_FILE_PATH, "wb");
     if (fp == NULL) {
         return -1;
     }

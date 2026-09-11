@@ -51,6 +51,10 @@ struct LoadedVertex {
     float u, v;
     struct RGBA color;
     uint8_t clip_rej;
+#ifdef SM64_PS5_REFLECTIONS
+    float plane_dist;   // above the reflecting plane, while drawing a reflection
+    float lu, lv, ld;   // where the shadow map sees it, while shadows are received
+#endif
 };
 
 struct TextureHashmapNode {
@@ -151,12 +155,105 @@ struct GfxDimensions gfx_current_dimensions;
 
 static bool dropped_frame;
 
-static float buf_vbo[MAX_BUFFERED * (26 * 3)]; // 3 vertices in a triangle and 26 floats per vtx
+static float buf_vbo[MAX_BUFFERED * (29 * 3)]; // 3 vertices in a triangle and 26 floats per vtx, and 3 for shadows (PS5 port)
 static size_t buf_vbo_len;
 static size_t buf_vbo_num_tris;
 
 static struct GfxWindowManagerAPI *gfx_wapi;
 static struct GfxRenderingAPI *gfx_rapi;
+
+#ifdef SM64_PS5_REFLECTIONS
+// Planar reflections (PS5 port). The scene graph marks the stretch of the
+// display list that draws the world through the camera, with the water's plane
+// in view space (see rendering_graph_node.c). gfx_run runs the list twice: the
+// first time only the marked stretch draws, mirrored in the plane and cut off
+// below it, into the backend's reflection target; the second time everything
+// draws as usual, and the water reads the reflection back.
+//
+// Mirroring happens between the modelview and projection matrices, so the
+// projection, its depth and the backend's reconstruction of w are unchanged.
+// Lighting keeps the unmirrored modelview, so everything is lit as it is seen.
+//
+// The sky has marks of its own around a second skybox, the one a camera
+// mirrored in the water sees. That draws only into the reflection, upside
+// down, and is skipped on the second run.
+#define GFX_REFLECT_TAG_BEGIN     0x524642 // "RFB"
+#define GFX_REFLECT_TAG_END       0x524645 // "RFE"
+#define GFX_REFLECT_TAG_SKY_BEGIN 0x524653 // "RFS"
+#define GFX_REFLECT_TAG_SKY_END   0x524654 // "RFT"
+// How far below the plane geometry still reflects, so that the reflection
+// meets the shore without a gap.
+#define REFLECT_CLIP_BIAS 2.0f
+
+extern bool gfx_agc_reflection_begin(bool has_view, float nx, float ny, float nz, float tan_half_fov);
+extern void gfx_agc_reflection_end(void);
+extern bool gfx_agc_reflections_enabled(void);
+
+static struct {
+    bool pass;          // the first run of the list, which draws only the marked stretch
+    bool inside;        // within it: drawing mirrored
+    bool sky;           // and it is the mirrored sky, which only turns upside down
+    bool skip;          // on the second run, within the mirrored sky
+    float plane[4];     // nx, ny, nz, d in view space
+    float mirror[4][4]; // the reflection in that plane, for row vectors
+} reflect;
+
+// Real shadows (PS5 port). Before everything, the world is drawn once more,
+// orthographically from a sun fixed in the sky, into the backend's shadow map;
+// only what the options say casts - objects, or everything. Then, as the frame
+// draws, each vertex of the world also carries where the shadow map sees it,
+// and the backend lays a shadow over the surfaces the map says the sun cannot
+// reach. Objects' round shadows are left out while this is on.
+//
+// The camera's stretch of the list carries its view (struct Ps5ViewInfo, laid
+// out as rendering_graph_node.c has it), and each entry in it a mark saying
+// whether it is the level, an object or a round shadow.
+#define GFX_TAG_ENTRY_KIND 0x52464B // "RFK"
+enum { ENTRY_LEVEL, ENTRY_OBJECT, ENTRY_BLOB_SHADOW };
+
+struct Ps5ViewInfo {
+    float plane[4];
+    float view[4][4];
+    float focus[3];
+    int32_t has_plane;
+};
+
+// The sun's direction. The shadow map has two cascades side by side, each
+// drawn by a run of its own: a near square around the camera's focus with fine
+// texels, and a far one eight times as large - as wide, and as deep along the
+// sun - that reaches across the level. Both share their centre, snapped to the
+// far cascade's texels (a whole number of the near's) so that shadows do not
+// crawl as the camera moves; and since the far cascade is the near one scaled
+// about that centre, the receiving pass works out its coordinates from the
+// near cascade's, which are all the vertices carry.
+static const float kSunDirection[3] = { -0.35f, -0.87f, -0.35f };
+#define SHADOW_NEAR_HALF_EXTENT 1536.0f
+#define SHADOW_NEAR_DEPTH_RANGE 2000.0f
+#define SHADOW_CASCADE_SCALE 8.0f
+#define SHADOW_CASCADE_TEXELS 2048.0f
+
+extern int gfx_agc_shadow_casters(void);   // 0 none, 1 objects, 2 everything
+extern bool gfx_agc_shadow_begin(int cascade);
+extern void gfx_agc_shadow_end(void);
+extern bool gfx_agc_shadow_ready(void);
+extern void gfx_agc_set_light_attributes(bool on);
+
+static struct {
+    int casters;                // this frame's setting
+    bool pass;                  // the first runs of the list, into the shadow map
+    int cascade;                // which cascade such a run draws: 0 near, 1 far
+    bool world;                 // within the camera's stretch, on any run
+    int kind;                   // of the entry being drawn
+    bool drawing;               // drawing into the shadow map
+    bool receive;               // vertices carry shadow map coordinates
+    float view_to_light[4][4];  // camera view space to the shadow map's clip space
+} shadow;
+
+#define GFX_PS5_CULLING (!shadow.drawing)
+#endif
+#ifndef SM64_PS5_REFLECTIONS
+#define GFX_PS5_CULLING 1
+#endif
 
 #include <time.h>
 static unsigned long get_time(void) {
@@ -287,6 +384,19 @@ static bool gfx_texture_cache_lookup(int tile, struct TextureHashmapNode **n, co
     *n = *node;
     return false;
 }
+
+#ifdef SM64_PS5_HD_TEXTURES
+// Where each imported texture comes from, for the backend to put an HD image
+// in its place (PS5 port, ps5gpu/hd_textures.c).
+extern void gfx_agc_texture_source(const uint8_t *addr, uint32_t size_bytes);
+
+// Forgets every texture imported so far, so each is imported again - from the
+// other source - the next time it is drawn. The backend's texture ids stay with
+// the cache entries and are reused.
+void gfx_texture_cache_invalidate(void) {
+    gfx_texture_cache.pool_pos = 0;
+}
+#endif
 
 static void import_texture_rgba16(int tile) {
     uint8_t rgba32_buf[8192];
@@ -477,6 +587,9 @@ static void import_texture(int tile) {
     }
     
     int t0 = get_time();
+#ifdef SM64_PS5_HD_TEXTURES
+    gfx_agc_texture_source(rdp.loaded_texture[tile].addr, rdp.loaded_texture[tile].size_bytes);
+#endif
     if (fmt == G_IM_FMT_RGBA) {
         if (siz == G_IM_SIZ_16b) {
             import_texture_rgba16(tile);
@@ -554,6 +667,23 @@ static void gfx_matrix_mul(float res[4][4], const float a[4][4], const float b[4
     memcpy(res, tmp, sizeof(tmp));
 }
 
+static void gfx_update_mp(void) {
+#ifdef SM64_PS5_REFLECTIONS
+    if (shadow.drawing) {
+        // From the camera's view straight to the sun's: no perspective.
+        gfx_matrix_mul(rsp.MP_matrix, rsp.modelview_matrix_stack[rsp.modelview_matrix_stack_size - 1], shadow.view_to_light);
+        return;
+    }
+    if (reflect.inside && !reflect.sky) {
+        float mirrored[4][4];
+        gfx_matrix_mul(mirrored, rsp.modelview_matrix_stack[rsp.modelview_matrix_stack_size - 1], reflect.mirror);
+        gfx_matrix_mul(rsp.MP_matrix, mirrored, rsp.P_matrix);
+        return;
+    }
+#endif
+    gfx_matrix_mul(rsp.MP_matrix, rsp.modelview_matrix_stack[rsp.modelview_matrix_stack_size - 1], rsp.P_matrix);
+}
+
 static void gfx_sp_matrix(uint8_t parameters, const int32_t *addr) {
     float matrix[4][4];
 #ifndef GBI_FLOATS
@@ -589,7 +719,7 @@ static void gfx_sp_matrix(uint8_t parameters, const int32_t *addr) {
         }
         rsp.lights_changed = 1;
     }
-    gfx_matrix_mul(rsp.MP_matrix, rsp.modelview_matrix_stack[rsp.modelview_matrix_stack_size - 1], rsp.P_matrix);
+    gfx_update_mp();
 }
 
 static void gfx_sp_pop_matrix(uint32_t count) {
@@ -597,7 +727,7 @@ static void gfx_sp_pop_matrix(uint32_t count) {
         if (rsp.modelview_matrix_stack_size > 0) {
             --rsp.modelview_matrix_stack_size;
             if (rsp.modelview_matrix_stack_size > 0) {
-                gfx_matrix_mul(rsp.MP_matrix, rsp.modelview_matrix_stack[rsp.modelview_matrix_stack_size - 1], rsp.P_matrix);
+                gfx_update_mp();
             }
         }
     }
@@ -618,7 +748,38 @@ static void gfx_sp_vertex(size_t n_vertices, size_t dest_index, const Vtx *verti
         float z = v->ob[0] * rsp.MP_matrix[0][2] + v->ob[1] * rsp.MP_matrix[1][2] + v->ob[2] * rsp.MP_matrix[2][2] + rsp.MP_matrix[3][2];
         float w = v->ob[0] * rsp.MP_matrix[0][3] + v->ob[1] * rsp.MP_matrix[1][3] + v->ob[2] * rsp.MP_matrix[2][3] + rsp.MP_matrix[3][3];
         
+#ifdef SM64_PS5_REFLECTIONS
+        if (reflect.inside && reflect.sky) {
+            y = -y;             // upside down, and never below the water
+            d->plane_dist = 1e9f;
+        } else if (reflect.inside) {
+            // Height above the plane, from the unmirrored position in view space.
+            float (*mv)[4] = rsp.modelview_matrix_stack[rsp.modelview_matrix_stack_size - 1];
+            float vx = v->ob[0] * mv[0][0] + v->ob[1] * mv[1][0] + v->ob[2] * mv[2][0] + mv[3][0];
+            float vy = v->ob[0] * mv[0][1] + v->ob[1] * mv[1][1] + v->ob[2] * mv[2][1] + mv[3][1];
+            float vz = v->ob[0] * mv[0][2] + v->ob[1] * mv[1][2] + v->ob[2] * mv[2][2] + mv[3][2];
+            d->plane_dist = vx * reflect.plane[0] + vy * reflect.plane[1] + vz * reflect.plane[2] + reflect.plane[3];
+        }
+        if (shadow.receive) {
+            // Where the shadow map sees it: texture coordinates, and depth.
+            float (*mv)[4] = rsp.modelview_matrix_stack[rsp.modelview_matrix_stack_size - 1];
+            float (*l)[4] = shadow.view_to_light;
+            float vx = v->ob[0] * mv[0][0] + v->ob[1] * mv[1][0] + v->ob[2] * mv[2][0] + mv[3][0];
+            float vy = v->ob[0] * mv[0][1] + v->ob[1] * mv[1][1] + v->ob[2] * mv[2][1] + mv[3][1];
+            float vz = v->ob[0] * mv[0][2] + v->ob[1] * mv[1][2] + v->ob[2] * mv[2][2] + mv[3][2];
+            float lx = vx * l[0][0] + vy * l[1][0] + vz * l[2][0] + l[3][0];
+            float ly = vx * l[0][1] + vy * l[1][1] + vz * l[2][1] + l[3][1];
+            float lz = vx * l[0][2] + vy * l[1][2] + vz * l[2][2] + l[3][2];
+            d->lu = lx * 0.5f + 0.5f;
+            d->lv = 0.5f - ly * 0.5f;
+            d->ld = lz * 0.5f + 0.5f;    // past either end of the near cascade the far one answers
+        }
+        if (!shadow.drawing) {
+            x = gfx_adjust_x_for_aspect_ratio(x);    // the shadow map is square
+        }
+#else
         x = gfx_adjust_x_for_aspect_ratio(x);
+#endif
         
         short U = v->tc[0] * rsp.texture_scaling_factor.s >> 16;
         short V = v->tc[1] * rsp.texture_scaling_factor.t >> 16;
@@ -712,10 +873,28 @@ static void gfx_sp_vertex(size_t n_vertices, size_t dest_index, const Vtx *verti
     }
 }
 
-static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx) {
-    struct LoadedVertex *v1 = &rsp.loaded_vertices[vtx1_idx];
-    struct LoadedVertex *v2 = &rsp.loaded_vertices[vtx2_idx];
-    struct LoadedVertex *v3 = &rsp.loaded_vertices[vtx3_idx];
+#ifdef SM64_PS5_PERF
+// Diagnostics for the FPS counter: milliseconds and triangles drawn by each
+// run of the display list - the shadow map, the reflection, the frame itself.
+enum { GFX_PERF_SHADOW, GFX_PERF_REFLECT, GFX_PERF_MAIN };
+double gfx_perf_ms[3];
+unsigned gfx_perf_tris[3];
+static unsigned gfx_perf_tri_count;
+static double gfx_perf_start;
+
+static void gfx_perf_begin(void) {
+    gfx_perf_tri_count = 0;
+    gfx_perf_start = gfx_wapi->get_time();
+}
+
+static void gfx_perf_end(int pass, bool ran) {
+    double ms = ran ? (gfx_wapi->get_time() - gfx_perf_start) * 1000.0 : 0.0;
+    gfx_perf_ms[pass] = gfx_perf_ms[pass] * 0.9 + ms * 0.1;
+    gfx_perf_tris[pass] = ran ? gfx_perf_tri_count : 0;
+}
+#endif
+
+static void gfx_draw_tri(struct LoadedVertex *v1, struct LoadedVertex *v2, struct LoadedVertex *v3) {
     struct LoadedVertex *v_arr[3] = {v1, v2, v3};
     
     //if (rand()%2) return;
@@ -724,8 +903,11 @@ static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx) {
         // The whole triangle lies outside the visible area
         return;
     }
+#ifdef SM64_PS5_PERF
+    gfx_perf_tri_count++;
+#endif
     
-    if ((rsp.geometry_mode & G_CULL_BOTH) != 0) {
+    if ((rsp.geometry_mode & G_CULL_BOTH) != 0 && GFX_PS5_CULLING) {
         float dx1 = v1->x / (v1->w) - v2->x / (v2->w);
         float dy1 = v1->y / (v1->w) - v2->y / (v2->w);
         float dx2 = v3->x / (v3->w) - v2->x / (v2->w);
@@ -738,7 +920,14 @@ static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx) {
             cross = -cross;
         }
         
-        switch (rsp.geometry_mode & G_CULL_BOTH) {
+        uint32_t cull = rsp.geometry_mode & G_CULL_BOTH;
+#ifdef SM64_PS5_REFLECTIONS
+        // A mirror image winds the other way round.
+        if (reflect.inside && cull != G_CULL_BOTH) {
+            cull ^= G_CULL_BOTH;
+        }
+#endif
+        switch (cull) {
             case G_CULL_FRONT:
                 if (cross <= 0) return;
                 break;
@@ -918,6 +1107,13 @@ static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx) {
                 }
             }
         }
+#ifdef SM64_PS5_REFLECTIONS
+        if (shadow.receive) {
+            buf_vbo[buf_vbo_len++] = v_arr[i]->lu;
+            buf_vbo[buf_vbo_len++] = v_arr[i]->lv;
+            buf_vbo[buf_vbo_len++] = v_arr[i]->ld;
+        }
+#endif
         /*struct RGBA *color = &v_arr[i]->color;
         buf_vbo[buf_vbo_len++] = color->r / 255.0f;
         buf_vbo[buf_vbo_len++] = color->g / 255.0f;
@@ -927,6 +1123,243 @@ static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx) {
     if (++buf_vbo_num_tris == MAX_BUFFERED) {
         gfx_flush();
     }
+}
+
+#ifdef SM64_PS5_REFLECTIONS
+static uint8_t gfx_lerp_u8(uint8_t a, uint8_t b, float t) {
+    float v = a + (b - a) * t + 0.5f;
+    return v < 0.0f ? 0 : (v > 255.0f ? 255 : (uint8_t)v);
+}
+
+static void gfx_reflect_lerp(struct LoadedVertex *r, const struct LoadedVertex *p, const struct LoadedVertex *q, float t) {
+    r->x = p->x + (q->x - p->x) * t;
+    r->y = p->y + (q->y - p->y) * t;
+    r->z = p->z + (q->z - p->z) * t;
+    r->w = p->w + (q->w - p->w) * t;
+    r->u = p->u + (q->u - p->u) * t;
+    r->v = p->v + (q->v - p->v) * t;
+    r->plane_dist = p->plane_dist + (q->plane_dist - p->plane_dist) * t;
+    r->lu = p->lu + (q->lu - p->lu) * t;
+    r->lv = p->lv + (q->lv - p->lv) * t;
+    r->ld = p->ld + (q->ld - p->ld) * t;
+    r->color.r = gfx_lerp_u8(p->color.r, q->color.r, t);
+    r->color.g = gfx_lerp_u8(p->color.g, q->color.g, t);
+    r->color.b = gfx_lerp_u8(p->color.b, q->color.b, t);
+    r->color.a = gfx_lerp_u8(p->color.a, q->color.a, t);
+    r->clip_rej = 0;
+    if (r->x < -r->w) r->clip_rej |= 1;
+    if (r->x > r->w) r->clip_rej |= 2;
+    if (r->y < -r->w) r->clip_rej |= 4;
+    if (r->y > r->w) r->clip_rej |= 8;
+    if (r->z < -r->w) r->clip_rej |= 16;
+    if (r->z > r->w) r->clip_rej |= 32;
+}
+
+// A triangle of the mirrored world, with what lies below the plane cut away:
+// reflected, it would rise above the water. Clipped in clip space, where every
+// attribute is still linear.
+static void gfx_reflect_tri(struct LoadedVertex *v1, struct LoadedVertex *v2, struct LoadedVertex *v3) {
+    struct LoadedVertex *in[3] = {v1, v2, v3};
+    struct LoadedVertex poly[4];
+    int n = 0;
+    if (v1->plane_dist >= -REFLECT_CLIP_BIAS && v2->plane_dist >= -REFLECT_CLIP_BIAS && v3->plane_dist >= -REFLECT_CLIP_BIAS) {
+        gfx_draw_tri(v1, v2, v3);
+        return;
+    }
+    for (int i = 0; i < 3; i++) {
+        struct LoadedVertex *p = in[i], *q = in[(i + 1) % 3];
+        float pd = p->plane_dist + REFLECT_CLIP_BIAS, qd = q->plane_dist + REFLECT_CLIP_BIAS;
+        if (pd >= 0.0f) {
+            poly[n++] = *p;
+        }
+        if ((pd >= 0.0f) != (qd >= 0.0f)) {
+            gfx_reflect_lerp(&poly[n++], p, q, pd / (pd - qd));
+        }
+    }
+    if (n >= 3) {
+        gfx_draw_tri(&poly[0], &poly[1], &poly[2]);
+    }
+    if (n == 4) {
+        gfx_draw_tri(&poly[0], &poly[2], &poly[3]);
+    }
+}
+
+// A mark from the scene graph. The second run of the list only skips the
+// mirrored sky; the first draws the marked stretches into the reflection.
+// The shadow map's matrix, from the camera's view space: back to the world,
+// then onto the square around the focus that the sun looks down on.
+static void gfx_shadow_matrix(const struct Ps5ViewInfo *vi, int cascade) {
+    // The view is a rotation and a translation, so its inverse is the
+    // rotation turned round and the translation undone.
+    float inverse[4][4];
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            inverse[i][j] = vi->view[j][i];
+        }
+        inverse[i][3] = 0.0f;
+    }
+    for (int j = 0; j < 3; j++) {
+        inverse[3][j] = -(vi->view[3][0] * vi->view[j][0] + vi->view[3][1] * vi->view[j][1] + vi->view[3][2] * vi->view[j][2]);
+    }
+    inverse[3][3] = 1.0f;
+
+    // The sun's axes: f along its light, r and u across it.
+    float f[3] = { kSunDirection[0], kSunDirection[1], kSunDirection[2] };
+    float len = sqrtf(f[0] * f[0] + f[1] * f[1] + f[2] * f[2]);
+    for (int i = 0; i < 3; i++) {
+        f[i] /= len;
+    }
+    float r[3] = { f[2], 0.0f, -f[0] };                  // up crossed with f
+    len = sqrtf(r[0] * r[0] + r[2] * r[2]);
+    r[0] /= len;
+    r[2] /= len;
+    float u[3] = { f[1] * r[2] - f[2] * r[1], f[2] * r[0] - f[0] * r[2], f[0] * r[1] - f[1] * r[0] };
+
+    float half = SHADOW_NEAR_HALF_EXTENT, range = SHADOW_NEAR_DEPTH_RANGE;
+    if (cascade == 1) {
+        half *= SHADOW_CASCADE_SCALE;
+        range *= SHADOW_CASCADE_SCALE;
+    }
+    // The centre moves in whole far texels, which are whole near texels too.
+    float texel = 2.0f * SHADOW_NEAR_HALF_EXTENT * SHADOW_CASCADE_SCALE / SHADOW_CASCADE_TEXELS;
+    float cr = vi->focus[0] * r[0] + vi->focus[1] * r[1] + vi->focus[2] * r[2];
+    float cu = vi->focus[0] * u[0] + vi->focus[1] * u[1] + vi->focus[2] * u[2];
+    float cf = vi->focus[0] * f[0] + vi->focus[1] * f[1] + vi->focus[2] * f[2];
+    cr = floorf(cr / texel) * texel;
+    cu = floorf(cu / texel) * texel;
+
+    float world[4][4] = {
+        { r[0] / half, u[0] / half, f[0] / range, 0.0f },
+        { r[1] / half, u[1] / half, f[1] / range, 0.0f },
+        { r[2] / half, u[2] / half, f[2] / range, 0.0f },
+        { -cr / half, -cu / half, -cf / range, 1.0f },
+    };
+    gfx_matrix_mul(shadow.view_to_light, inverse, world);
+}
+
+// Whether the entry being drawn casts a shadow, as the options have it.
+static bool gfx_shadow_casts(void) {
+    return shadow.kind == ENTRY_OBJECT || (shadow.casters >= 2 && shadow.kind == ENTRY_LEVEL);
+}
+
+// Whether the entry being drawn is a round shadow real shadows stand in for.
+static bool gfx_round_shadow_hidden(void) {
+    return shadow.casters > 0 && shadow.world && shadow.kind == ENTRY_BLOB_SHADOW;
+}
+
+static void gfx_reflect_marker(uint32_t tag, uintptr_t arg) {
+    // The camera's stretch and its entries' kinds, on every run.
+    if (tag == GFX_TAG_ENTRY_KIND) {
+        shadow.kind = (int)arg;
+        return;
+    }
+    if (tag == GFX_REFLECT_TAG_BEGIN && arg != 0 && !shadow.world) {
+        gfx_flush();
+        shadow.world = true;
+        shadow.kind = ENTRY_LEVEL;
+        if (shadow.casters > 0) {
+            // The receiving pass works from the near cascade.
+            gfx_shadow_matrix((const struct Ps5ViewInfo *)arg, shadow.pass ? shadow.cascade : 0);
+            if (shadow.pass) {
+                if (gfx_agc_shadow_begin(shadow.cascade)) {
+                    shadow.drawing = true;
+                    gfx_update_mp();
+                }
+            } else if (!reflect.pass && gfx_agc_shadow_ready()) {
+                shadow.receive = true;
+                gfx_agc_set_light_attributes(true);
+            }
+        }
+    } else if (tag == GFX_REFLECT_TAG_END && shadow.world) {
+        gfx_flush();
+        shadow.world = false;
+        if (shadow.drawing) {
+            shadow.drawing = false;
+            gfx_update_mp();
+            gfx_agc_shadow_end();
+        }
+        if (shadow.receive) {
+            shadow.receive = false;
+            gfx_agc_set_light_attributes(false);
+        }
+    }
+    if (shadow.pass) {
+        return;
+    }
+    if (!reflect.pass) {
+        if (tag == GFX_REFLECT_TAG_SKY_BEGIN || tag == GFX_REFLECT_TAG_SKY_END) {
+            gfx_flush();
+            reflect.skip = tag == GFX_REFLECT_TAG_SKY_BEGIN;
+        }
+        return;
+    }
+    if (tag == GFX_REFLECT_TAG_SKY_BEGIN && !reflect.inside) {
+        gfx_flush();
+        if (!gfx_agc_reflection_begin(false, 0.0f, 0.0f, 0.0f, 0.0f)) {
+            return;
+        }
+        reflect.inside = true;
+        reflect.sky = true;
+        gfx_update_mp();
+    } else if (tag == GFX_REFLECT_TAG_SKY_END && reflect.inside && reflect.sky) {
+        gfx_flush();
+        reflect.inside = false;
+        reflect.sky = false;
+        gfx_update_mp();
+        gfx_agc_reflection_end();
+    } else if (tag == GFX_REFLECT_TAG_BEGIN && arg != 0 && ((const struct Ps5ViewInfo *)arg)->has_plane && !reflect.inside) {
+        const float *plane = ((const struct Ps5ViewInfo *)arg)->plane;
+        float p11 = rsp.P_matrix[1][1];
+        gfx_flush();
+        if (!gfx_agc_reflection_begin(true, plane[0], plane[1], plane[2], p11 != 0.0f ? 1.0f / fabsf(p11) : 1.0f)) {
+            return;
+        }
+        // p' = p - 2 (n . p + d) n
+        for (int i = 0; i < 4; i++) {
+            reflect.plane[i] = plane[i];
+            for (int j = 0; j < 4; j++) {
+                reflect.mirror[i][j] = i == j ? 1.0f : 0.0f;
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                reflect.mirror[i][j] -= 2.0f * plane[i] * plane[j];
+            }
+            reflect.mirror[3][i] = -2.0f * plane[3] * plane[i];
+        }
+        reflect.inside = true;
+        gfx_update_mp();
+    } else if (tag == GFX_REFLECT_TAG_END && reflect.inside && !reflect.sky) {
+        gfx_flush();
+        reflect.inside = false;
+        gfx_update_mp();
+        gfx_agc_reflection_end();
+    }
+}
+#endif
+
+static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx) {
+    struct LoadedVertex *v1 = &rsp.loaded_vertices[vtx1_idx];
+    struct LoadedVertex *v2 = &rsp.loaded_vertices[vtx2_idx];
+    struct LoadedVertex *v3 = &rsp.loaded_vertices[vtx3_idx];
+#ifdef SM64_PS5_REFLECTIONS
+    if (shadow.pass) {
+        if (shadow.drawing && gfx_shadow_casts()) {
+            gfx_draw_tri(v1, v2, v3);
+        }
+        return;
+    }
+    if (reflect.pass) {
+        if (reflect.inside && !gfx_round_shadow_hidden()) {
+            gfx_reflect_tri(v1, v2, v3);
+        }
+        return;
+    }
+    if (reflect.skip || gfx_round_shadow_hidden()) {
+        return;
+    }
+#endif
+    gfx_draw_tri(v1, v2, v3);
 }
 
 static void gfx_sp_geometry_mode(uint32_t clear, uint32_t set) {
@@ -1195,6 +1628,11 @@ static void gfx_dp_set_fill_color(uint32_t packed_color) {
 }
 
 static void gfx_draw_rectangle(int32_t ulx, int32_t uly, int32_t lrx, int32_t lry) {
+#ifdef SM64_PS5_REFLECTIONS
+    if (reflect.pass || reflect.skip || shadow.pass) {
+        return; // screen-space rectangles are never part of the reflection or the shadows
+    }
+#endif
     uint32_t saved_other_mode_h = rdp.other_mode_h;
     uint32_t cycle_type = (rdp.other_mode_h & (3U << G_MDSFT_CYCLETYPE));
     
@@ -1403,7 +1841,18 @@ static void gfx_run_dl(Gfx* cmd) {
                 gfx_sp_texture(C1(16, 16), C1(0, 16), C0(11, 3), C0(8, 3), C0(0, 8));
 #endif
                 break;
+#ifdef SM64_PS5_REFLECTIONS
+            case G_NOOP:
+                gfx_reflect_marker(C0(0, 24), cmd->words.w1);
+                break;
+#endif
             case G_VTX:
+#ifdef SM64_PS5_REFLECTIONS
+                if (shadow.pass ? !(shadow.drawing && gfx_shadow_casts())
+                                : reflect.pass ? !reflect.inside : (reflect.skip || gfx_round_shadow_hidden())) {
+                    break; // nothing that draws on this run
+                }
+#endif
 #ifdef F3DEX_GBI_2
                 gfx_sp_vertex(C0(12, 8), C0(1, 7) - C0(12, 8), seg_addr(cmd->words.w1));
 #elif defined(F3DEX_GBI) || defined(F3DLP_GBI)
@@ -1675,8 +2124,68 @@ void gfx_run(Gfx *commands) {
     
     double t0 = gfx_wapi->get_time();
     gfx_rapi->start_frame();
+#ifdef SM64_PS5_REFLECTIONS
+    // First the reflection, if it is wanted: only the marked stretches,
+    // mirrored into their own target. Then the frame as usual, from the same
+    // starting state.
+    // Before either, the shadow map, if shadows are on.
+    shadow.casters = gfx_agc_shadow_casters();
+#ifdef SM64_PS5_PERF
+    gfx_perf_begin();
+#endif
+    if (shadow.casters > 0) {
+        shadow.pass = true;
+        for (shadow.cascade = 0; shadow.cascade < 2; shadow.cascade++) {
+            gfx_run_dl(commands);
+            gfx_flush();
+            if (shadow.drawing) {
+                shadow.drawing = false;
+                gfx_update_mp();
+                gfx_agc_shadow_end();
+            }
+            shadow.world = false;
+            reflect.skip = false;
+            gfx_sp_reset();
+        }
+        shadow.cascade = 0;
+        shadow.pass = false;
+    }
+#ifdef SM64_PS5_PERF
+    gfx_perf_end(GFX_PERF_SHADOW, shadow.casters > 0);
+    gfx_perf_begin();
+#endif
+    if (gfx_agc_reflections_enabled()) {
+        reflect.pass = true;
+        gfx_run_dl(commands);
+        gfx_flush();
+        if (reflect.inside) {
+            reflect.inside = false;
+            reflect.sky = false;
+            gfx_update_mp();
+            gfx_agc_reflection_end();
+        }
+        reflect.pass = false;
+        shadow.world = false;
+        gfx_sp_reset();
+    }
+#ifdef SM64_PS5_PERF
+    gfx_perf_end(GFX_PERF_REFLECT, gfx_agc_reflections_enabled());
+    gfx_perf_begin();
+#endif
+#endif
     gfx_run_dl(commands);
     gfx_flush();
+#if defined(SM64_PS5_REFLECTIONS) && defined(SM64_PS5_PERF)
+    gfx_perf_end(GFX_PERF_MAIN, true);
+#endif
+#ifdef SM64_PS5_REFLECTIONS
+    reflect.skip = false;
+    shadow.world = false;
+    if (shadow.receive) {
+        shadow.receive = false;
+        gfx_agc_set_light_attributes(false);
+    }
+#endif
     double t1 = gfx_wapi->get_time();
     //printf("Process %f %f\n", t1, t1 - t0);
     gfx_rapi->end_frame();

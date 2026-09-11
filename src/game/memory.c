@@ -416,7 +416,14 @@ void *load_to_fixed_pool_addr(u8 *destAddr, u8 *srcStart, u8 *srcEnd) {
     u32 destSize = ALIGN16((u8 *) sPoolListHeadR - destAddr);
 
     if (srcSize <= destSize) {
+        // With USE_SYSTEM_MALLOC, main_pool_alloc's second argument is a release
+        // handler, not a pool side: MEMORY_POOL_RIGHT (1) would become a function
+        // pointer to address 1, which main_pool_free() later calls and crashes.
+#ifdef USE_SYSTEM_MALLOC
+        dest = main_pool_alloc(destSize, NULL);
+#else
         dest = main_pool_alloc(destSize, MEMORY_POOL_RIGHT);
+#endif
         if (dest != NULL) {
             bzero(dest, destSize);
             osWritebackDCacheAll();
@@ -438,14 +445,22 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
     void *dest = NULL;
 
     u32 compSize = ALIGN16(srcEnd - srcStart);
+#ifdef USE_SYSTEM_MALLOC
+    u8 *compressed = main_pool_alloc(compSize, NULL);
+#else
     u8 *compressed = main_pool_alloc(compSize, MEMORY_POOL_RIGHT);
+#endif
 
     // Decompressed size from mio0 header
     u32 *size = (u32 *) (compressed + 4);
 
     if (compressed != NULL) {
         dma_read(compressed, srcStart, srcEnd);
+#ifdef USE_SYSTEM_MALLOC
+        dest = main_pool_alloc(*size, NULL);
+#else
         dest = main_pool_alloc(*size, MEMORY_POOL_LEFT);
+#endif
         if (dest != NULL) {
             decompress(compressed, dest);
             set_segment_base_addr(segment, dest);
@@ -460,7 +475,11 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
 void *load_segment_decompress_heap(u32 segment, u8 *srcStart, u8 *srcEnd) {
     UNUSED void *dest = NULL;
     u32 compSize = ALIGN16(srcEnd - srcStart);
+#ifdef USE_SYSTEM_MALLOC
+    u8 *compressed = main_pool_alloc(compSize, NULL);
+#else
     u8 *compressed = main_pool_alloc(compSize, MEMORY_POOL_RIGHT);
+#endif
     UNUSED u32 *pUncSize = (u32 *) (compressed + 4);
 
     if (compressed != NULL) {

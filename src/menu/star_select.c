@@ -21,6 +21,20 @@
 #include "text_strings.h"
 #include "prevent_bss_reordering.h"
 
+#ifdef SM64_PS5_LANGUAGE
+/* The text in the language the player chose (ps5/lang/ps5_lang.c). */
+#include "ps5_lang.h"
+#define PS5_DIALOG_TABLE      ps5_lang_dialog_table()
+#define PS5_COURSE_NAME_TABLE ps5_lang_course_name_table()
+#define PS5_ACT_NAME_TABLE    ps5_lang_act_name_table()
+#define PS5_LANG_STR(str)     ps5_lang_string(str)
+#else
+#define PS5_DIALOG_TABLE      segmented_to_virtual(seg2_dialog_table)
+#define PS5_COURSE_NAME_TABLE segmented_to_virtual(seg2_course_name_table)
+#define PS5_ACT_NAME_TABLE    segmented_to_virtual(seg2_act_name_table)
+#define PS5_LANG_STR(str)     (str)
+#endif
+
 /**
  * @file star_select.c
  * This file implements how the star select screen (act selector) function.
@@ -270,9 +284,9 @@ void print_act_selector_strings(void) {
     u8 *currLevelName;
     u8 **actNameTbl;
 #else
-    u8 **levelNameTbl = segmented_to_virtual(seg2_course_name_table);
+    u8 **levelNameTbl = PS5_COURSE_NAME_TABLE;
     u8 *currLevelName = segmented_to_virtual(levelNameTbl[gCurrCourseNum - 1]);
-    u8 **actNameTbl = segmented_to_virtual(seg2_act_name_table);
+    u8 **actNameTbl = PS5_ACT_NAME_TABLE;
 #endif
     u8 *selectedActName;
 #ifndef VERSION_EU

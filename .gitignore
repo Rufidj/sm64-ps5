@@ -72,3 +72,14 @@ sm64config.txt
 !/sound/**/*custom*/**/*.aiff
 !/assets/**/*custom*.bin
 !/assets/**/*custom*/**/*.bin
+
+# PS5 build outputs
+ps5/out/
+ps5/shaders_build/
+ps5/menu_build/
+ps5/shaders_src/water_reflect_1x_p.s
+__pycache__/
+
+# Never commit ROMs or Sony modules
+*.prx
+ps5/lang/text_es/dialogs.h

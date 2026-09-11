@@ -988,6 +988,23 @@ void cur_obj_update(void) {
         cur_obj_enable_rendering_if_mario_in_room();
     } else if ((objFlags & OBJ_FLAG_COMPUTE_DIST_TO_MARIO) && gCurrentObject->collisionData == NULL) {
         if (!(objFlags & OBJ_FLAG_ACTIVE_FROM_AFAR)) {
+#ifdef SM64_PS5_REFLECTIONS
+            // PS5 port: the object stops taking full part in the game past its
+            // own distance, as it always has, but stays drawn out to that
+            // distance times the scale the options menu sets - so things do not
+            // pop into view as Mario approaches.
+            extern f32 gPs5DrawDistanceScale;
+            if (distanceFromMario > gCurrentObject->oDrawingDistance) {
+                gCurrentObject->activeFlags |= ACTIVE_FLAG_FAR_AWAY;
+            } else if (gCurrentObject->oHeldState == HELD_FREE) {
+                gCurrentObject->activeFlags &= ~ACTIVE_FLAG_FAR_AWAY;
+            }
+            if (distanceFromMario > gCurrentObject->oDrawingDistance * gPs5DrawDistanceScale) {
+                gCurrentObject->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
+            } else if (gCurrentObject->oHeldState == HELD_FREE) {
+                gCurrentObject->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
+            }
+#else
             // If the object has a render distance, check if it should be shown.
             if (distanceFromMario > gCurrentObject->oDrawingDistance) {
                 // Out of render distance, hide the object.
@@ -998,6 +1015,7 @@ void cur_obj_update(void) {
                 gCurrentObject->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
                 gCurrentObject->activeFlags &= ~ACTIVE_FLAG_FAR_AWAY;
             }
+#endif
         }
     }
 }

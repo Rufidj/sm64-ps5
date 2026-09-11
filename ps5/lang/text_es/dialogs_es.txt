@@ -1,0 +1,1149 @@
+# The Spanish dialogues. See ps5/lang/wrap_es.py for the format.
+
+@DIALOG_000
+¡Vaya! Estás en plena zona de batalla. Las Estrellas de Poder que robó Bowser están dentro de los mundos de los cuadros.
+
+Primero habla con el Bob-omb amigo. (Pulsa [B] para hablar.) Seguro que te echa una mano, y sus compañeros de otras zonas también.
+
+Para leer un cartel, párate frente a él y pulsa [B]. Pulsa [A] o [B] para pasar de página. También puedes hablar con otros personajes si te pones delante y pulsas [B].
+
+@DIALOG_001
+¡Cuidado! Si andas por aquí, ¡te puede caer encima una bomba de agua!
+
+A esos Bob-omb enemigos les encanta pelear y siempre encuentran la forma de atacar.
+
+Este prado es un campo de batalla desde que el Gran Bob-omb se hizo con la Estrella de Poder.
+
+¿Puedes recuperarla? Cruza el puente y sube por el camino de la izquierda hasta el Gran Bob-omb.
+
+¡Vuelve a verme cuando tengas la Estrella de Poder!
+
+@DIALOG_002
+¡Eh, tú! Ahí delante es peligroso, así que escucha bien. Hazme caso.
+
+Cruza los dos puentes y ojo con las bombas de agua que caen.
+
+El Gran Bob-omb, en lo alto de la montaña, es muy poderoso: ¡no dejes que te agarre!
+
+Somos los Bob-omb amigos y estamos de tu parte. ¡Habla con nosotros cuando quieras!
+
+@DIALOG_003
+¡Gracias, Mario! El Gran Bob-omb ya no es más que un petardo mojado. Pero la batalla por el castillo no ha hecho más que empezar.
+
+Otros enemigos guardan las demás Estrellas de Poder. Si consigues más Estrellas, podrás abrir puertas nuevas que llevan a mundos nuevos.
+
+Mis Bob-omb amigos te esperan. Habla con ellos: te prepararán los cañones.
+
+@DIALOG_004
+Somos Bob-ombs pacíficos, así que nosotros no usamos los cañones.
+
+Pero si tú quieres salir volando, adelante. Están a tu disposición.
+
+Te prepararemos todos los cañones de este mundo. ¡Buen viaje!
+
+@DIALOG_005
+¡Eh, Mario! ¿Es verdad que has vencido al Gran Bob-omb? ¡Qué fuerte!
+
+Serás muy fuerte, sí. Y bastante rápido. Por cierto, ¿cómo de rápido eres?
+
+¿Lo bastante para ganarme a mí, Koopa el Veloz? Lo dudo. Inténtalo.
+
+¿Qué tal una carrera hasta la cima, donde estaba el Gran Bob-omb?
+
+¿Qué me dices? Cuando diga 『Ya』, ¡empieza la carrera!
+
+Preparado...
+
+!//Ya////Paso
+
+@DIALOG_006
+¡¡¡Eh!!! No intentes hacer trampa. Hay que correr el recorrido entero.
+
+Hasta otra. Búscame cuando quieras correr de verdad.
+
+@DIALOG_007
+Bufff... fff... pufff... ¡Uau! ¡Eres... rapidísimo! ¡Un rayo con bigote!
+
+Toma, te la has ganado limpiamente.
+
+@DIALOG_008
+CUIDADO CON EL CHOMP CADENAS ¡Peligro extremo!
+
+Acércate y pulsa [C]^ para verlo mejor. Da miedo, ¿eh?
+
+¿Ves la moneda roja de lo alto de la estaca?
+
+Cuando reúnas ocho, aparecerá una Estrella de Poder en el prado que hay al otro lado del puente.
+
+@DIALOG_009
+¡Cuánto tiempo! ¡Vaya, cómo has mejorado!
+
+¿Has estado entrenando a escondidas o es el poder de las Estrellas?
+
+Estoy de bajón desde que perdí la última carrera. Este mundo es mi casa: ¿qué tal una revancha?
+
+La meta está en el Valle del Viento. ¿Preparado?
+
+!//Ya//// Paso
+
+@DIALOG_010
+Has pisado el interruptor de la Gorra Alada. Con ella puesta podrás volar por el cielo.
+
+Ahora saldrán Gorras Aladas de todos los bloques rojos que encuentres.
+
+¿Quieres guardar la partida?
+
+!//Sí////No
+
+@DIALOG_011
+¡Has pisado el interruptor de la Gorra de Metal! La Gorra de Metal hace a Mario invencible.
+
+Ahora saldrán Gorras de Metal de todos los bloques verdes que encuentres.
+
+¿Quieres guardar la partida?
+
+!//Sí////No
+
+@DIALOG_012
+Has pisado el interruptor de la Gorra Invisible. La Gorra Invisible hace que Mario desaparezca.
+
+Ahora saldrán Gorras Invisibles de todos los bloques azules que encuentres.
+
+¿Quieres guardar la partida?
+
+!//Sí////No
+
+@DIALOG_013
+¡100 monedas! Mario recibe más poder del castillo.
+
+¿Guardar la partida?
+
+!//Sí////No
+
+@DIALOG_014
+¡Otra Estrella de Poder! Mario recibe más valor del poder del castillo.
+
+¿Quieres guardar la partida?
+
+!//Claro//Ahora no
+
+@DIALOG_015
+Puedes dar puñetazos a los enemigos para tumbarlos. Pulsa [A] para saltar y [B] para golpear.
+
+Pulsa [A] y luego [B] para dar una patada. Para coger algo, pulsa también [B]. Para lanzar lo que llevas, pulsa [B] otra vez.
+
+@DIALOG_016
+¡Súbete al caparazón brillante y ve a donde quieras! ¡Arrasa con los enemigos!
+
+@DIALOG_017
+Soy el Gran Bob-omb, señor de todo lo explosivo, ¡rey de las explosiones del mundo entero!
+
+¿Cómo te atreves a escalar mi montaña? ¿Con qué derecho pisas mi cima imperial?
+
+Puede que hayas esquivado a mis guardias, pero de mis manos no escaparás...
+
+...y jamás te llevarás mi Estrella de Poder. ¡Te desafío, Mario!
+
+Si quieres la Estrella que guardo, tendrás que demostrar tu valía en combate.
+
+¿Serás capaz de agarrarme por la espalda y estrellarme contra este suelo real? ¡Yo creo que no!
+
+@DIALOG_018
+Estoy durmiendo porque... tengo sueño. No me gusta que me molesten. Camina sin hacer ruido, por favor.
+
+@DIALOG_019
+¡Shhh! ¡Camina en silencio por el pasillo, por favor!
+
+@DIALOG_020
+Querido Mario:
+
+Ven al castillo, por favor. Te he hecho un pastel.
+
+Un abrazo,
+
+Princesa Peach
+
+@DIALOG_021
+Bienvenido. ¡No hay nadie en casa!
+
+¡Largo de aquí, y no vuelvas!
+
+¡Gua ja ja!
+
+@DIALOG_022
+Necesitas una llave para abrir esta puerta.
+
+@DIALOG_023
+¡Esta llave no encaja! Quizá sea la del sótano...
+
+@DIALOG_024
+Necesitas el poder de las Estrellas para abrir esta puerta. Consigue una Estrella de Poder de algún enemigo de los cuadros del castillo.
+
+@DIALOG_025
+Hace falta el poder de 3 Estrellas para abrir esta puerta. Te faltan [%] Estrellas.
+
+@DIALOG_026
+Hace falta el poder de 8 Estrellas para abrir esta puerta. Te faltan [%] Estrellas.
+
+@DIALOG_027
+Hace falta el poder de 30 Estrellas para abrir esta puerta. Te faltan [%] Estrellas.
+
+@DIALOG_028
+Hace falta el poder de 50 Estrellas para abrir esta puerta. Te faltan [%] Estrellas.
+
+@DIALOG_029
+Para abrir la puerta que lleva a las escaleras 『infinitas』 necesitas 70 Estrellas.
+
+¡Bua ja ja!
+
+@DIALOG_030
+¡Hola! Aquí los hermanos Lakitu, con información en directo sobre Mario. Está a punto de aprender a acercarse a los enemigos sin que lo oigan.
+
+El truco es este: tiene que andar muy despacio para no hacer ruido.
+
+Y, para terminar con las técnicas de cámara de antes, puedes mirar alrededor con [C]> y [C]<. Pulsa [C]| para ver la acción desde lejos.
+
+Cuando la cámara no pueda moverse más, sonará un aviso. Aquí los hermanos Lakitu, nos despedimos.
+
+@DIALOG_031
+¡No puede ser! ¡Me has ganado... otra vez!
+
+¡Y me acabo de gastar todos mis ahorros en estas zapatillas Koopa Mach 1!
+
+En fin, supongo que la Estrella es para el ganador de la carrera. ¡Enhorabuena, Mario!
+
+@DIALOG_032
+¡Con la Gorra Alada puedes volar! Póntela y haz un Triple Salto, tres saltos seguidos, para despegar.
+
+¡Volarás aún más alto si sales disparado de un cañón con la Gorra Alada puesta!
+
+Usa los botones [C] para mirar alrededor mientras vuelas y pulsa [Z] para aterrizar.
+
+@DIALOG_033
+¡Hola! Has llegado al castillo de la princesa Peach por una tubería.
+
+Manejar el mando es pan comido. Pulsa [A] para saltar y [B] para atacar. Pulsa [B] también para leer los carteles.
+
+Mueve a Mario con la palanca de control del centro del mando. Y ahora, al castillo.
+
+@DIALOG_034
+Buenas tardes. Aquí los hermanos Lakitu, en directo desde la puerta del castillo de la princesa.
+
+Mario acaba de llegar y vamos a grabarlo en directo mientras entra en el castillo y busca las Estrellas de Poder perdidas.
+
+Como cámaras con experiencia, grabaremos desde el ángulo recomendado, pero puedes cambiarlo con los botones [C].
+
+Si no podemos mover más la vista, oirás un aviso. Para mirar alrededor, párate y pulsa [C]^.
+
+Pulsa [A] para seguir jugando. Cambia el modo de cámara con el botón [R]. Los carteles del camino te recordarán todo esto.
+
+Por ahora, en directo, han sido los hermanos Lakitu.
+
+@DIALOG_035
+Hay cuatro botones de cámara, los botones 『[C]』. Pulsa [C]^ para mirar alrededor con la palanca de control.
+
+Normalmente verás a Mario a través de la cámara de Lakitu. Es la recomendada para jugar.
+
+Puedes cambiar el ángulo con [C]>. Si pulsas [R], la vista pasa a la cámara de Mario, justo detrás de él.
+
+Pulsa [R] otra vez para volver a la cámara de Lakitu. Pulsa [C]| para ver a Mario de lejos con cualquiera de las dos vistas.
+
+@DIALOG_036
+MIRADOR
+
+Pulsa [C]^ para echar un vistazo. ¡No te dejes nada!
+
+Pulsa [R] para cambiar a la cámara de Mario, que siempre lo sigue. Pulsa [R] otra vez para volver a la de Lakitu.
+
+Pon el juego en pausa y cambia el modo para 『fijar』 la cámara mientras mantienes [R]. ¡Pruébalo!
+
+@DIALOG_037
+¡Yo gano, tú pierdes! ¡Ja ja ja ja!
+
+No se te da mal, pero yo me deslizo mejor. ¡Suerte la próxima vez!
+
+@DIALOG_038
+Al notar el poder de las Estrellas, la puerta se abre poco a poco.
+
+@DIALOG_039
+Prohibida la entrada, por orden del Gran Bob-omb
+
+Jamás entregaré mis Estrellas, pues su brillo guarda el poder del castillo.
+
+Fueron un regalo de Bowser, el rey Koopa en persona, y están bien escondidas en mi reino.
+
+De mis labios no saldrá ni una palabra sobre dónde están. Bueno, está bien, quizá una pista:
+
+fíjate en los nombres de las Estrellas al empezar el mundo.
+
+!//--El Gran Bob-omb
+
+@DIALOG_040
+¡Atención! ¡Abajo, grieta helada!
+
+@DIALOG_041
+¡Yo gano, tú pierdes! ¡Ja ja ja!
+
+Eso te pasa por meterte con Koopa el Veloz.
+
+¡Suerte la próxima vez!
+
+@DIALOG_042
+¡Cuidado! ¡Puente estrecho! ¡Cruza despacio!
+
+Puedes saltar al borde del precipicio y quedarte colgado, y también bajar por el borde si te mueves despacio.
+
+Para soltarte, pulsa [Z] o mueve la palanca de control hacia la espalda de Mario.
+
+Para subir, empuja la palanca hacia arriba. Para subir rápido, pulsa el botón [A].
+
+@DIALOG_043
+Si saltas y mantienes el botón [A], puedes agarrarte a algunas cosas que hay por encima.
+
+¡Es igual que agarrarse a un pájaro en pleno vuelo!
+
+@DIALOG_044
+¿Quiééén anda ahí? ¿Quiééén me ha despertado? ¡Aún es de día: debería estar durmiendo!
+
+Oye, ya que estoy despierto, ¿por qué no damos un vuelo juntos?
+
+Mantén pulsado [A] para agarrarte. Suelta [A] para soltarte.
+
+Te llevaré a donde quieras mientras me aguanten las alas. Mira mi sombra y agárrate.
+
+@DIALOG_045
+¡Uf! Ya no puedo más. ¡Deberías comer menos pasta, Mario!
+
+Por hoy se acabó. Pulsa [A] para soltarte. ¡Adiooooós!
+
+@DIALOG_046
+Tienes que dominar tres saltos importantes. Prueba primero el Triple Salto.
+
+Corre deprisa y salta tres veces: una, dos y tres. Si calculas bien, darás un brinco, un salto y luego uno altísimo.
+
+Después, a por distancia con el Salto Largo. Corre, pulsa [Z] para agacharte y [A] para saltar muy lejos.
+
+Para el Salto de Pared, pulsa [A] para saltar contra una pared y vuelve a saltar al tocarla.
+
+¿Lo tienes? Triple Salto, Salto Largo y Salto de Pared. Practica, practica y practica. Sin ellos no tienes nada que hacer.
+
+@DIALOG_047
+¡Hola! ¡Te preparo el cañón!
+
+@DIALOG_048
+Cima de la Montaña Nevada
+
+¡Ojo, que resbala! Entra primero en la cabaña.
+
+@DIALOG_049
+¿Te acuerdas del Salto de Pared? Tendrás que dominarlo para llegar a los sitios altos.
+
+Úsalo para saltar de una pared a otra. Empuja la palanca de control hacia donde quieras rebotar para coger impulso.
+
+¡La práctica hace al maestro!
+
+@DIALOG_050
+Mantén [Z] para agacharte y bajar deslizándote por una cuesta. ¡O pulsa [Z] en el aire para dar un Culetazo!
+
+Si te paras, te agachas y saltas, ¡darás una Voltereta hacia Atrás!
+
+¿Lo tienes? Hay más: agáchate y salta para hacer un Salto Largo. O agáchate y anda para... da igual.
+
+@DIALOG_051
+¡Trepar es fácil! Si saltas contra árboles, postes o columnas, te agarrarás solo. Pulsa [A] para saltar hacia atrás.
+
+Para girar alrededor, empuja la palanca de control a derecha o izquierda.
+
+Al llegar arriba, ¡empuja hacia arriba para hacer el pino! Salta desde el pino para bajar por todo lo alto.
+
+@DIALOG_052
+Párate y pulsa [Z] para agacharte y luego pulsa [A] para dar una Voltereta hacia Atrás bien alta.
+
+Para la Voltereta Lateral, corre, da un giro brusco y salta.
+
+Con los dos saltos puedes coger mucha altura.
+
+@DIALOG_053
+A veces, al pasar por un aro de monedas o al encontrar un punto secreto de un mundo, aparece un número rojo.
+
+Si activas cinco números rojos, aparecerá una Estrella secreta.
+
+@DIALOG_054
+¡Bienvenido al tobogán de nieve! ¡Sube!
+
+Para ir más deprisa, empuja la palanca de control hacia delante. Para frenar, tira hacia atrás.
+
+@DIALOG_055
+Eeeh, Mario, colega, ¿qué tal? Acércate. Tienes pinta de deslizarte rápido.
+
+Yo sé reconocer la velocidad, ya lo creo: soy el campeón del mundo del trineo. ¿Qué me dices? ¿Echamos una carrera?
+
+Preparado...
+
+!//Ya//// Paso
+
+@DIALOG_056
+¡Me has helado el récord! ¡Increíble! Sabía que eras el más frío, ¡y ahora has demostrado que también eres el más rápido!
+
+No puedo darte una medalla de oro, pero toma esta Estrella. ¡Te la has ganado!
+
+@DIALOG_057
+¡Ay! ¡Mi pequeña! ¿Has visto a mi pequeña? Es el bebé más precioso del mundo entero.
+
+(Dicen que tiene mi pico...) No consigo acordarme de dónde la dejé.
+
+A ver... Paré a por arenques y cubitos de hielo, y luego... ¡buah! ¡No me acuerdo!
+
+@DIALOG_058
+¡Has encontrado a mi preciosa pequeña! ¿Dónde te habías metido? ¿Cómo podría agradecértelo, Mario?
+
+Ah, tengo esta... Estrella. Toma, con mi eterna gratitud.
+
+@DIALOG_059
+¡Esa no es mi pequeña! ¡No se parece nada a mí! ¡Sus padres estarán preocupadísimos!
+
+@DIALOG_060
+¡ATENCIÓN! Léelo antes de tirarte al agua.
+
+Si te quedas mucho rato bajo el agua, te quedarás sin aire.
+
+Sube a la superficie a respirar o busca una burbuja o monedas para respirar bajo el agua.
+
+Pulsa [A] para nadar. Mantén [A] para nadar despacio y tranquilo. Pulsa [A] con buen ritmo para ir más rápido.
+
+Empuja la palanca de control hacia arriba y pulsa [A] para bucear.
+
+Empuja la palanca hacia abajo y pulsa [A] para volver a la superficie.
+
+Mantén abajo y pulsa [A] en la superficie, cerca del borde del agua, para salir de un salto.
+
+@DIALOG_061
+¡BRRR! ¡Peligro de congelación! No nades aquí. Va en serio.
+
+!/--El Pingüino
+
+@DIALOG_062
+Dentro del bloque verde está la asombrosa Gorra de Metal.
+
+Con ella puesta no te quemarás ni te harán daño los ataques enemigos.
+
+Ni siquiera tendrás que respirar mientras la lleves.
+
+El único problema:
+
+@DIALOG_063
+La Gorra Invisible está dentro del bloque azul. ¡El señor Ojo se va a llevar una sorpresa, porque con ella puesta serás invisible!
+
+Hasta el Gran Boo se dejará engañar, y además podrás atravesar paredes secretas.
+
+@DIALOG_064
+Cuando te pongas la Gorra Alada del bloque rojo, haz un Triple Salto para subir muy alto.
+
+Guía a Mario con la palanca de control. Tira hacia atrás para subir, empuja hacia delante para bajar y pulsa [Z] para aterrizar.
+
+@DIALOG_065
+¡Clase de natación! Pulsa [A] para nadar a braza. Si calculas bien el ritmo, nadarás rápido.
+
+Mantén pulsado [A] para dar patadas suaves y constantes.
+
+Empuja la palanca de control hacia arriba para bucear y tira hacia atrás para ir a la superficie.
+
+Para salir del agua de un salto, mantén abajo en la palanca y pulsa [A]. Está chupado, ¿verdad?
+
+Pero recuerda: ¡Mario no puede respirar bajo el agua! Sube a por aire cuando baje la energía.
+
+Y una última cosa: bajo el agua no se pueden abrir las puertas.
+
+@DIALOG_066
+¡Mario, soy Peach! ¡Ten cuidado! ¡Bowser es malísimo! Intentará quemarte con su horrible aliento de fuego.
+
+Corre por detrás y agárralo de la cola con el botón [B]. Cuando lo tengas, dale vueltas en círculos grandes.
+
+Gira la palanca de control para ir cada vez más rápido. Cuanto más rápido gires, más lejos volará.
+
+Usa los botones [C] para mirar alrededor, Mario. Tienes que lanzar a Bowser contra una de las bombas de las cuatro esquinas.
+
+Apunta bien y pulsa [B] otra vez para soltarlo. ¡Suerte, Mario! Nuestro destino está en tus manos.
+
+@DIALOG_067
+¡Mala suerte, Mario! La princesa Peach no está aquí... ¡Gua ja ja! Venga, inténtalo: ¡agárrame de la cola!
+
+¡A MÍ no vas a darme vueltas! ¡Un debilucho como tú no me va a echar de aquí! ¡Jamás! ¡Ja!
+
+@DIALOG_068
+¡Esto es la Tierra de Lava! Si te prendes fuego o caes en un charco de llamas, darás botes de dolor, pero no pierdas la calma.
+
+Aún puedes controlar a Mario: ¡tú tranquilo!
+
+@DIALOG_069
+A veces chocarás con paredes invisibles en los bordes de los mundos de los cuadros. Si chocas con una mientras vuelas, saldrás rebotado.
+
+@DIALOG_070
+Puedes volver al salón principal del castillo cuando quieras desde los mundos de los cuadros.
+
+Solo tienes que pararte, pulsar Start para poner el juego en pausa y elegir 『Salir del mundo』.
+
+No hace falta que consigas todas las Estrellas de un mundo antes de pasar al siguiente.
+
+Vuelve más adelante, con más práctica, a por las difíciles.
+
+Cada vez que encuentres una Estrella, aparecerá una pista de la siguiente en la pantalla de inicio del mundo.
+
+Aun así, puedes ir a por cualquiera de las que queden. No tienes que conseguir la de la pista.
+
+@DIALOG_071
+¡Peligro delante! ¡Cuidado con la nube rara! ¡No la respires!
+
+Si te mareas, corre a un sitio alto y respira aire fresco.
+
+Círculo: refugio. Flecha: entrada y salida.
+
+@DIALOG_072
+¡Vientos fuertes delante! Sujétate bien la gorra.
+
+Si sale volando, tendrás que buscarla por esta montaña.
+
+@DIALOG_073
+¡Aaarrr! Hola, grumete. Aquí tengo un tesoro hundido, ya lo creo.
+
+Pero para llevarte el botín tienes que abrir los cofres en el orden correcto.
+
+¿Que cuál es ese orden, dices?
+
+¡Eso no lo diré jamás!
+
+!//--El capitán
+
+@DIALOG_074
+Puedes agarrarte con los dedos al borde de un precipicio o de una cornisa y quedarte colgado.
+
+Para soltarte, empuja la palanca de control hacia la espalda de Mario o pulsa el botón [Z].
+
+Para subir a la cornisa, empuja la palanca hacia arriba o pulsa [A] nada más agarrarte para subir rápido.
+
+@DIALOG_075
+¡Mario! Mi castillo corre un gran peligro. Sé que Bowser está detrás de esto... ¡y sé que solo tú puedes detenerlo!
+
+Las puertas del castillo que Bowser ha sellado solo se abren con el poder de las Estrellas.
+
+Pero hay caminos secretos en el castillo, caminos que Bowser no ha encontrado.
+
+Uno de esos caminos está en esta sala, ¡y guarda una de las Estrellas secretas del castillo!
+
+¡Encuentra esa Estrella secreta, Mario! Te ayudará en tu aventura. ¡Por favor, Mario, tienes que ayudarnos!
+
+¡Recupera todas las Estrellas de Poder del castillo y líbranos de esta horrible prisión!
+
+¡Por favor!
+
+@DIALOG_076
+Gracias al poder de las Estrellas, la vida vuelve al castillo.
+
+¡Por favor, Mario, tienes que echar a Bowser de aquí!
+
+Deja que te cuente algo del castillo. En la sala de los espejos, fíjate bien en lo que no se refleje en el espejo.
+
+Y cuando vayas a la ciudad del agua, puedes inundarla saltando muy alto hacia el cuadro. Por cierto, ¡mira lo que he encontrado!
+
+@DIALOG_077
+Está decretado que hay que aplastar los pilares.
+
+@DIALOG_078
+Rompe el bloque de monedas azules dando un Culetazo con el botón [Z].
+
+Una moneda azul vale por cinco amarillas.
+
+¡Pero date prisa! ¡Las monedas desaparecen si tardas en cogerlas! Una pena.
+
+@DIALOG_079
+¡Ayyy! ¡Suéltame! ¡Uuuc-c-c! ¡Solo estaba jugando! ¿No sabes aguantar una broma?
+
+Te propongo un trato: si me sueltas, te doy algo muy bueno.
+
+¿Qué me dices?
+
+!//Soltar/ Sujetar
+
+@DIALOG_080
+¡Iiih ji ji ji!
+
+@DIALOG_081
+El misterio es de agua o de sequía. ¿Y dónde está la solución?
+
+La ciudad recibe a sus visitantes con la profundidad que traen al entrar.
+
+@DIALOG_082
+¡Sujétate la gorra! Si la pierdes, te harán daño con mucha facilidad.
+
+Si se te cae, tendrás que buscarla en el mundo donde la perdiste.
+
+Ay, la cosa no pinta bien para Peach. Sigue atrapada en algún sitio dentro de las paredes.
+
+¡Por favor, Mario, tienes que ayudarla! ¿Sabías que hay mundos de enemigos dentro de las paredes?
+
+Pues sí. Las tropas de Bowser también están ahí. Toma, esto lo guardaba para ti.
+
+@DIALOG_083
+Ese reloj tiene algo raro. Al saltar dentro, fíjate en la posición de la aguja grande.
+
+¡Anda, mira lo que he encontrado! ¡Toma, Mario, cógela!
+
+@DIALOG_084
+¡Aaay! ¡Suéltame, bruto! ¡Llego tarde, tardísimo, tengo que darme prisa!
+
+¿Esta cosa brillante? ¡Mía! Es mía. Quien lo encuentra se lo queda...
+
+Tarde, tarde, tarde... ¡Ay! ¡Pues tómala! Era un regalo de Bowser.
+
+¡Y ahora déjame! ¡Tengo una cita y no puedo llegar tarde al té!
+
+@DIALOG_085
+En esta casa no tienes ni la sombra de una posibilidad.
+
+Si sales de aquí, te mereces... una medalla de fantasma...
+
+@DIALOG_086
+Correr en círculos hace que a algunos malos les den vueltas los ojos.
+
+@DIALOG_087
+¡Papá Noel no es el único que puede bajar por una chimenea! ¡Pasa!
+
+!/--El dueño de la cabaña
+
+@DIALOG_088
+Ascensor de obra
+
+Para el que se baje aquí: agarra el poste de la izquierda y baja con cuidado.
+
+@DIALOG_089
+¡Los dos caminos son peligrosos! ¡Mira dónde pisas!
+
+El que no sepa hacer el Salto Largo, ay, ay, que tire a la derecha.
+
+Derecha: ascensor de obra /// laberinto de niebla
+
+Izquierda: agujero negro ///lago subterráneo
+
+Círculo rojo: ascensor 2 //// lago subterráneo
+
+Flecha: estás aquí
+
+@DIALOG_090
+¡Bua ja ja ja! ¡Has caído en mi trampa, tal y como sabía que harías!
+
+Te aviso, 『amigo』: ¡mira dónde pisas!
+
+@DIALOG_091
+¡Peligro! ¡Rachas fuertes! Aunque el viento es un transporte muy cómodo.
+
+@DIALOG_092
+Otra vez dando la lata, ¿eh, Mario? ¿No ves que me lo estoy pasando en grande haciendo travesuras con mis secuaces?
+
+¡Devuelve esas Estrellas! ¡Mis tropas de las paredes las necesitan! ¡Bua ja ja!
+
+@DIALOG_093
+¡Mario! ¡Otra vez tú! Pues mira, mejor: andaba buscando algo que freír con mi aliento de fuego.
+
+¡El poder de tus Estrellas no sirve de nada contra mí! Tus amigos están atrapados dentro de las paredes...
+
+¡Y a la princesa no vas a volver a verla! ¡Bua ja ja ja!
+
+@DIALOG_094
+¡Coge carrerilla cuesta arriba! ¿Te acuerdas del Salto Largo? ¡Corre, pulsa [Z] y salta!
+
+@DIALOG_095
+Para leer un cartel, ponte delante y pulsa [B], como acabas de hacer.
+
+Cuando quieras hablar con un Koopa Troopa o con otro animal, colócate justo delante.
+
+Recupera las Estrellas que Bowser ha robado en este mundo, por favor.
+
+@DIALOG_096
+Aquí el camino es estrecho. ¡Con calma! ¡Nadie puede subir a lo alto de la montaña!
+
+Y si sabes lo que te conviene, no despiertes a nadie que esté durmiendo.
+
+Ve despacio y pisa flojito.
+
+@DIALOG_097
+¡No te dejes empujar! Si alguien intenta echarte, ¡empuja tú también!
+
+¡Es uno contra uno, y el perdedor acaba achicharrado!
+
+@DIALOG_098
+Pasa, pasa... je, je, je...
+
+@DIALOG_099
+Je je je... ¡Ya eres mío, ji ji!
+
+Yo atravieso esta pared. ¿Tú puedes? ¡Je, je, je!
+
+@DIALOG_100
+Uquiqui... Uaquiqui... ¡qui qui!
+
+¡Ja! ¡La he pillado! ¡Es mía! ¡Jiiiiji ji!
+
+@DIALOG_101
+¡Aggg! Suéltame... me estás... ahogando...
+
+Cof... ¡me han tendido una trampa! ¿Esta gorra? Bueno, vale, tómala.
+
+Es una gorra chulísima, pero te la devuelvo. ¡Aunque a mí me queda mejor que a ti! ¡Iiii! ¡Qui quiii!
+
+@DIALOG_102
+¡Pssst! Los Boo son vergonzosos. Si los miras a los ojos se desvanecen, pero si les das la espalda vuelven a aparecer.
+
+No sirve de nada golpearlos mientras se desvanecen. Acércate por detrás sin que te vean y dales un puñetazo.
+
+@DIALOG_103
+Sobre cuatro torres hay que posarse...
+
+Y en la cima brillará la luz...
+
+@DIALOG_104
+Esa estrella oscura que tienes delante es una 『marca de Estrella』.
+
+Cuando reúnas las 8 monedas rojas, la Estrella aparecerá aquí.
+
+@DIALOG_105
+¡Listos para el despegue! ¡Venga, métete en el cañón!
+
+Puedes llegar a la Estrella de la isla flotante usando los cuatro cañones.
+
+Apunta con la palanca de control y pulsa [A] para disparar.
+
+Si tienes buena mano, puedes agarrarte a los árboles o a los postes para aterrizar.
+
+@DIALOG_106
+¡Listos para el despegue! ¡Venga, métete en el cañón!
+
+@DIALOG_107
+Los fantasmas... no... ¡MUEREN!
+
+¡Je, je, je! ¿Serás capaz de salir de aquí... con vida?
+
+@DIALOG_108
+¡Buuuuu-m! ¡Aquí llega el rey de las travesuras, la torre del terror, el Gran Boo!
+
+Ja ja ja ja...
+
+@DIALOG_109
+¡Ooooh, nooooo! ¡Hablando de salir del cuerpo: el mío se ha derretido!
+
+¿Te has cruzado con algún cazador de cabezas? ¡Me vendría de perlas un cuerpo nuevo!
+
+¡Brrr! ¡Se me va a quedar esta cara para siempre!
+
+@DIALOG_110
+Me hace falta una buena cabeza sobre los hombros. ¿Conoces a alguien que necesite un buen cuerpo?
+
+¡Por favor! ¡Si es así, te sigo!
+
+@DIALOG_111
+¡Perfecto! ¡Qué cuerpo tan estupendo! Toma, esto es un regalo para ti. Seguro que te da calor.
+
+@DIALOG_112
+¡Reúne todas las monedas que puedas! Te llenan la energía.
+
+Puedes ver cuántas monedas has reunido en cada uno de los 15 mundos de enemigos.
+
+También recuperas energía al tocar el Corazón Giratorio.
+
+Cuanto más rápido lo atravieses, más energía recuperarás.
+
+@DIALOG_113
+En los bloques rojos, verdes y azules hay gorras especiales.
+
+Pisa los interruptores de los mundos escondidos para activar los bloques de gorra.
+
+@DIALOG_114
+¡Me pone de los nervios! Construimos vuestras casas y vuestros castillos. Pavimentamos vuestros caminos y aun así nos pisáis.
+
+¿Alguna vez dais las gracias? ¡No! Pues a mí no me vas a limpiar los pies encima. ¡Creo que te voy a aplastar por diversión!
+
+¿Algún problema? ¡Intenta aplastarme tú, debilucho! ¡Ja!
+
+@DIALOG_115
+¡No! ¡Aplastado otra vez! Al final no soy más que un escalón.
+
+No pienso arrastrarme... bueno, un poco sí. Tú ganas. ¡Llévate esto!
+
+@DIALOG_116
+¿Quéééé...? ¿Cómo puede ser que un renacuajo como tú haya desactivado al rey de los Bob-omb?
+
+Puede que seas lo bastante rápido para tumbarme a mí, pero tendrás que apretar el paso si quieres coger al rey Bowser por la cola.
+
+¡Creo que mis tropas podrían aprender de ti!
+
+Aquí tienes tu Estrella, como prometí, Mario.
+
+Si quieres volver a verme, elige esta Estrella en el menú. Por ahora, adiós.
+
+@DIALOG_117
+¿Quién... anda... aquí? ¿Quién... rompe... sello?
+
+¿Despierta... a los antiguos? No gustar luz...
+
+Rrrruuum... ¡No gustar intrusos!
+
+¡Ahora... lucha... cuerpo... a... cuerpo!
+
+@DIALOG_118
+¡Grrruuum! ¿Qué... pasar? Nosotros... aplastados como piedrecita.
+
+¡Tú muy fuerte! ¡Tú mandar en pirámide antigua! Por hoy...
+
+Ahora, toma Estrella de Poder. Nosotros... dormir... oscuridad.
+
+@DIALOG_119
+¡Grrr! He sido un poco descuidado. Esto no es lo que había planeado... pero sigo teniendo el poder de las Estrellas, y sigo teniendo a Peach.
+
+¡Bua ja ja! ¡De mí no sacarás más Estrellas! Aún no he terminado contigo, pero por ahora te dejo marchar. ¡Me las pagarás... más tarde!
+
+@DIALOG_120
+¡Buaaah! ¿Puede ser que haya perdido? El poder de las Estrellas me ha fallado... esta vez.
+
+Considéralo un empate. La próxima vez estaré en plena forma.
+
+Y ahora, si quieres ver a tu preciosa princesa, sube a lo alto de la torre.
+
+¡Te estaré esperando! ¡Gua ja ja ja!
+
+@DIALOG_121
+¡Nooo! ¡No puede ser! ¿De verdad me has vencido, Mario?
+
+¡Yo di poder a esas tropas y ahora se está apagando!
+
+¡Aaargh! ¡Ya veo la paz volviendo al mundo! ¡No lo soporto! Mmm... Esto no ha terminado...
+
+¡Vamos, tropas! ¡Veamos juntos el final! ¡Bua ja ja!
+
+@DIALOG_122
+El agujero negro
+
+Derecha: ascensor de obra /// laberinto de niebla
+
+Izquierda: lago subterráneo
+
+@DIALOG_123
+Caverna de metal
+
+Derecha: a la cascada
+
+Izquierda: interruptor de la Gorra de Metal
+
+@DIALOG_124
+Ascensor de obra
+
+¡Peligro! ¡Lee bien las instrucciones!
+
+El ascensor sigue en la dirección de la flecha activada.
+
+@DIALOG_125
+Salida del laberinto de niebla
+
+¡Peligro! Cerrado. Da media vuelta.
+
+@DIALOG_126
+Arriba: agujero negro
+
+Derecha: ascensor de obra /// laberinto de niebla
+
+@DIALOG_127
+Lago subterráneo
+
+Derecha: cueva de metal
+
+Izquierda: mina abandonada ///(cerrada)
+
+Aquí vive un dragón marino tranquilo. Dale un Culetazo en el lomo para que baje la cabeza. No acabes siendo su comida.
+
+@DIALOG_128
+¡Hay que luchar con honor! ¡Las reglas reales prohíben echar al rey fuera del ring!
+
+@DIALOG_129
+¡Bienvenido al mundo del interruptor de la Gorra Invisible! Todos los bloques azules se volverán sólidos en cuanto pises el interruptor.
+
+Con la Gorra Invisible desaparecerás, así que podrás esquivar enemigos y atravesar muchas cosas. ¡Pruébalo!
+
+@DIALOG_130
+¡Bienvenido al mundo del interruptor de la Gorra de Metal! En cuanto pises el interruptor, los bloques verdes se volverán sólidos.
+
+Cuando conviertas tu cuerpo en metal con la Gorra de Metal, ¡podrás andar bajo el agua! ¡Pruébalo!
+
+@DIALOG_131
+¡Bienvenido al mundo de la Gorra Alada! Pisa el interruptor rojo de lo alto de la torre, en el centro del aro del arco iris.
+
+Al activarlo, todos los bloques rojos que encuentres se volverán sólidos.
+
+¡Prueba la Gorra Alada! Haz el Triple Salto para despegar y pulsa [Z] para aterrizar.
+
+Tira de la palanca de control hacia atrás para subir y empújala hacia delante para bajar, igual que si pilotaras un avión.
+
+@DIALOG_132
+Eh, Mario, colega, no estarás intentando hacer trampa, ¿verdad? Los atajos no valen.
+
+Y sé que tú lo sabes de sobra. ¡Descalificado! ¡La próxima vez, juega limpio!
+
+@DIALOG_133
+¡Cuánto me alegro de verte! La princesa... y yo... y, bueno, todos: estamos atrapados dentro de las paredes del castillo.
+
+Bowser ha robado las Estrellas del castillo y usa su poder para crear su propio mundo en los cuadros y en las paredes.
+
+¡Recupera las Estrellas de Poder, por favor! Según las encuentres, podrás usar su poder para abrir las puertas que Bowser ha sellado.
+
+Hay cuatro salas en la planta baja. Empieza por la del cuadro del Bob-omb: es la única que Bowser no ha sellado.
+
+Cuando reúnas ocho Estrellas de Poder podrás abrir la puerta de la estrella grande. ¡La princesa tiene que estar dentro!
+
+@DIALOG_134
+Los nombres de las Estrellas son también pistas para encontrarlas. Aparecen al empezar cada mundo.
+
+Puedes conseguir las Estrellas en el orden que quieras. Algunas Estrellas, enemigos u objetos solo aparecen si eliges una Estrella concreta.
+
+Cuando lleves unas cuantas, puedes probar otro mundo. ¡Todos esperamos tu ayuda!
+
+@DIALOG_135
+Fue Bowser quien robó las Estrellas. ¡Lo vi con mis propios ojos!
+
+Ha escondido seis Estrellas en cada mundo, pero en algunos no las encontrarás todas hasta que pises los interruptores de gorra.
+
+Las Estrellas que hayas encontrado aparecen en la pantalla de inicio de cada mundo.
+
+Si quieres volver a ver a alguno de los enemigos que ya has vencido, elige la Estrella que les quitaste.
+
+@DIALOG_136
+¡Vaya! ¿Ya has recuperado tantas Estrellas? ¡Así se hace, Mario! ¡Seguro que nos sacas de aquí en un periquete!
+
+Ten cuidado, eso sí. Bowser y su banda escribieron el manual de lo 『malvado』.
+
+Hazme caso: cuando necesites curarte, reúne monedas.
+
+Las monedas amarillas llenan un trozo de energía, las rojas dos y las azules cinco.
+
+Para que aparezcan monedas azules, da un Culetazo en los bloques de monedas azules.
+
+@DIALOG_137
+¡Gracias, Mario! El castillo recupera su energía según reúnes Estrellas de Poder, y has echado a Bowser de aquí, hacia alguna zona más adelante.
+
+Por cierto, ¿estás cogiendo monedas? ¡Aparecen Estrellas especiales al reunir 100 monedas en cada uno de los 15 mundos!
+
+@DIALOG_138
+Abajo: lago subterráneo
+
+Izquierda: agujero negro
+
+Derecha: laberinto de niebla (cerrado)
+
+@DIALOG_139
+Arriba: ascensor automático
+
+El ascensor arranca solo y sigue un recorrido fijo. También desaparece solo.
+
+@DIALOG_140
+Zona de ascensores
+
+Derecha: laberinto de niebla /// entrada
+
+Izquierda: agujero negro ///ascensor 1
+
+Flecha: estás aquí
+
+@DIALOG_141
+¡Has recuperado una de las Estrellas de Poder robadas! Ya puedes abrir algunas de las puertas selladas del castillo.
+
+Prueba la sala de la princesa, en la primera planta, y la sala del cuadro de la Fortaleza de Whomp, en la planta baja.
+
+Las tropas de Bowser siguen ganando poder, así que no puedes rendirte. ¡Sálvanos, Mario! ¡Sigue buscando Estrellas!
+
+@DIALOG_142
+¡Has recuperado tres Estrellas de Poder! Ya puedes abrir cualquier puerta con un 3 en su estrella.
+
+Puedes entrar y salir de los mundos abiertos cuando quieras. ¡Los enemigos de ahí adelante son aún peores, así que ten cuidado!
+
+@DIALOG_143
+¡Has recuperado ocho Estrellas de Poder! ¡Ya puedes abrir la puerta de la Estrella grande!
+
+Pero Bowser está justo ahí... ¿oyes a la princesa llamando?
+
+@DIALOG_144
+¡Has recuperado 30 Estrellas de Poder! ¡Ya puedes abrir la puerta de la Estrella grande!
+
+Pero antes de seguir, ¿qué tal va todo lo demás?
+
+¿Has aplastado las dos columnas? No habrás perdido la gorra, ¿verdad? Si es así, ¡tendrás que pisotear al cóndor para recuperarla!
+
+Dicen que Bowser se ha escabullido del mar hacia el subsuelo. ¿Lo tienes por fin acorralado?
+
+@DIALOG_145
+¡Has recuperado 50 Estrellas de Poder! Ya puedes abrir la puerta de Estrella de la segunda planta. Bowser está allí, ya sabes.
+
+¡Ah! Ya has encontrado todos los interruptores de gorra, ¿no? ¿El rojo, el verde y el azul?
+
+Las gorras de los bloques de colores ayudan mucho. Venga, date prisa: la segunda planta está ahí mismo.
+
+@DIALOG_146
+¡Has encontrado 70 Estrellas de Poder! El misterio de las escaleras infinitas está resuelto gracias a ti, ¡y Bowser está que trina!
+
+¡Y ahora, al combate final!
+
+@DIALOG_147
+¿Estás usando los bloques de gorra? Deberías, de verdad.
+
+Para volverlos sólidos y poder romperlos, tienes que pulsar los interruptores de gorra de los mundos escondidos del castillo.
+
+Los mundos escondidos aparecen solo cuando recuperas algunas Estrellas de Poder.
+
+¡Los bloques de gorra ayudan mucho! Rojo para la Gorra Alada, verde para la de Metal y azul para la Invisible.
+
+@DIALOG_148
+Montaña del Muñeco de Nieve delante. ¡Prohibido el paso! Y no intentes el Triple Salto sobre el lanzador de bloques de hielo.
+
+Si te caes al estanque helado, tu energía baja deprisa y no se recupera sola.
+
+!//--El Muñeco de Nieve
+
+@DIALOG_149
+¡Bienvenido al tobogán secreto de la princesa Peach!
+
+Aquí hay escondida una Estrella que Bowser no encontró.
+
+Mientras te deslizas, empuja hacia delante para acelerar y tira hacia atrás para frenar.
+
+¡Si bajas muy rápido, ganarás la Estrella!
+
+@DIALOG_150
+¡Buaaa! ¡Me has inundado la casa! ¿P-por qué? ¡Mira qué desastre! ¿Y ahora qué hago?
+
+El techo está destrozado, el suelo empapado... ¿qué hago, qué hago? Buf... buf... ¡me pone de los NERVIOS!
+
+Todo me va mal desde que tengo esta Estrella... Brilla mucho, pero me hace sentir... raro...
+
+@DIALOG_151
+¡No lo aguanto más! ¡Primero me empapas y luego me pisoteas!
+
+¡Ahora sí que estoy muy, muy, MUY enfadado!
+
+¡Buaaaaaaaaaaaaaa!
+
+@DIALOG_152
+¡Ayyy! ¡Basta, basta! Vale, me rindo. ¡Toma la Estrella!
+
+Uf, ahora me siento mejor. Total, ya no me hace falta: por la noche veo las estrellas por el agujero del techo.
+
+Me dan... paz. Ven a visitarme cuando quieras.
+
+@DIALOG_153
+¡Eh! ¿Quién anda ahí? ¿Qué me está trepando encima? ¿Una hormiga de hielo? ¿Una pulga de nieve?
+
+Sea lo que sea, ¡me está molestando! ¡Creo que voy a soplar para quitármelo de encima!
+
+@DIALOG_154
+¡Sujétate la gorra! Si la pierdes, te harán daño fácilmente. Si se te cae, búscala en el mundo donde la perdiste.
+
+Hablando de perder: la princesa sigue atrapada en las paredes. ¡Ayúdala, Mario, por favor!
+
+Ah, ya sabrás que hay mundos secretos en las paredes además de en los cuadros, ¿verdad?
+
+@DIALOG_155
+Gracias al poder de las Estrellas, la vida vuelve al castillo.
+
+¡Por favor, Mario, tienes que echar a Bowser de aquí!
+
+Deja que te cuente algo del castillo. En la sala de los espejos, fíjate bien en lo que no se refleje en el espejo.
+
+Y cuando vayas a la ciudad del agua, puedes inundarla saltando muy alto hacia el cuadro.
+
+@DIALOG_156
+¡El mundo de dentro del reloj es rarísimo!
+
+Cuando saltes dentro, ¡fíjate en la posición de la aguja grande!
+
+@DIALOG_157
+¡Cuidado! No dejes que te trague la arena movediza.
+
+Si te hundes en la arena no podrás saltar, y si te cubre la cabeza te ahogarás.
+
+Las zonas oscuras son pozos sin fondo.
+
+@DIALOG_158
+1. Si saltas varias veces seguidas con buen ritmo, saltarás cada vez más alto. Si corres muy rápido y encadenas tres saltos, harás un Triple Salto.
+
+2. Salta contra una pared sólida y vuelve a saltar al tocarla. Con este Salto de Pared puedes subir a sitios más altos.
+
+@DIALOG_159
+3. Si te paras, pulsas [Z] para agacharte y luego saltas, harás una Voltereta hacia Atrás.
+
+Para el Salto Largo, corre rápido, pulsa [Z] y salta.
+
+@DIALOG_160
+Pulsa [B] mientras corres rápido para hacer un ataque deslizándote.
+
+Para levantarte mientras te deslizas, pulsa [A] o [B].
+
+@DIALOG_161
+¡¡Mario!! ¿De verdad eres tú? ¡Cuánto tiempo desde nuestra última aventura!
+
+Me dijeron que quizá te vería si esperaba aquí, ¡y ya casi había perdido la esperanza!
+
+¿Es verdad? ¿De verdad has vencido a Bowser y has devuelto las Estrellas al castillo?
+
+¿Y has salvado a la princesa? ¡Sabía que podrías!
+
+Ahora tengo un mensaje muy especial para ti.
+
+『¡Gracias por jugar a Super Mario 64! Este es el final del juego, pero no el final de la diversión.』
+
+El equipo de Super Mario 64
+
+@DIALOG_162
+¡No, no, no! ¡Otra vez tú no! Tengo muchísima prisa, ¿no lo ves?
+
+No tengo tiempo de discutir por Estrellas. Toma, quédatela. Nunca quise escondértela...
+
+Es que llevo un retraso... Eso es todo. Y ahora, me marcho. ¡Ayyy! ¡Suéltame!
+
+@DIALOG_163
+¡Nooo! ¡Esta vez me has vencido de verdad, Mario! ¡No soporto perder contigo!
+
+¡Mis tropas... no valen nada! ¡Han entregado todas las Estrellas de Poder! ¿Cómo? ¿Que hay 120 en total?
+
+¡Increíble! ¿Había algunas en el castillo que se me pasaron?
+
+Ahora veo la paz volviendo al mundo... ¡Buah! ¡Cómo lo odio! No puedo ni mirar: ¡me largo!
+
+Espera a la próxima. Y hasta entonces, ¡que no se enfríe esa palanca de control!
+
+¡Buaa ja ja!
+
+@DIALOG_164
+¡Mario! ¿Qué tal, colega? Hace tiempo que no bajo por el tobogán, así que estoy sin forma.
+
+Aun así, siempre me apunto a una buena carrera, y más contra un viejo compañero de trineo.
+
+¿Qué me dices? Preparado... listo...
+
+!//Ya//// Paso
+
+@DIALOG_165
+No me hago responsable de quien se maree y se desmaye por dar vueltas alrededor de este poste.
+
+@DIALOG_166
+Vuelvo enseguida. Ahora estoy entrenando, así que pásate más tarde.
+
+!//--Koopa el Veloz
+
+@DIALOG_167
+El castillo de la princesa Peach está ahí mismo.
+
+Pulsa [A] para saltar, [Z] para agacharte y [B] para golpear, leer un cartel o coger algo.
+
+Pulsa [B] otra vez para lanzar lo que lleves.
+
+@DIALOG_168
+¡Eh! ¡Ya vale! Es la segunda vez que me atizas. ¡Te la estás buscando, aliento de espagueti!
+
+@DIALOG_169
+¡Prohibido el paso! ¡Sí, tú! ¡Aaargh!
+
+Quien entre en esta cueva sin permiso sufrirá un desastre seguro.
