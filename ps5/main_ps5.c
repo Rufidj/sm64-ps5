@@ -33,6 +33,7 @@
 #include "menu_ps5.h"
 #include "ps5_settings.h"
 #include "hd_textures.h"
+#include "game/rumble_init.h"
 
 extern struct GfxRenderingAPI gfx_agc_api;
 extern struct GfxWindowManagerAPI gfx_ps5_api;
@@ -116,6 +117,12 @@ static void produce_one_frame(void) {
         gfx_run(s_last_display_list);
     else
         game_loop_one_iteration();
+
+    /* The rumble the game asks for (src/game/rumble_init.c), driven here since
+     * the console's port has no thread for it. The game advances 30 times a
+     * second and the rumble was written for 60, so it gets two turns. */
+    rumble_frame();
+    rumble_frame();
 
     int samples_left = audio_api->buffered();
     u32 num_audio_samples = samples_left < audio_api->get_desired_buffered() ? SAMPLES_HIGH : SAMPLES_LOW;

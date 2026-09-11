@@ -269,6 +269,24 @@ static void thread6_rumble_loop(UNUSED void *a0) {
 }
 #endif
 
+#ifndef TARGET_N64
+/* A port has no rumble thread, so its frame loop drives the rumble instead,
+ * at the rate the thread ran at - one call a displayed frame. */
+void rumble_frame(void) {
+    if (!sRumblePakActive) {
+        sRumblePakActive = osMotorInit(&gSIEventMesgQueue, &gRumblePakPfs, 0) < 1;
+        sRumblePakErrorCount = 0;
+    }
+
+    update_rumble_data_queue();
+    update_rumble_pak();
+
+    if (gRumblePakTimer > 0) {
+        gRumblePakTimer--;
+    }
+}
+#endif
+
 void cancel_rumble(void) {
     sRumblePakActive = osMotorInit(&gSIEventMesgQueue, &gRumblePakPfs, gPlayer1Controller->port) < 1;
 

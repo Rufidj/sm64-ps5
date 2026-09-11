@@ -39,7 +39,7 @@ extern void gfx_texture_cache_invalidate(void);
 
 /* ---- settings ---- */
 
-Ps5Settings g_ps5_settings = { PS5_ASPECT_16_9, 1, 2, 1, 1, 2, 0, 1, 1, 0, PS5_LANG_ENGLISH };
+Ps5Settings g_ps5_settings = { PS5_ASPECT_16_9, 1, 2, 1, 1, 2, 0, 1, 1, 0, PS5_LANG_ENGLISH, 1 };
 
 /* Everything the menu says, in the language chosen: English first, Spanish
  * second. The game's own text is switched by ps5/lang/ps5_lang.c. */
@@ -97,6 +97,7 @@ static const Row kRows[] = {
     { { "HD textures", "Texturas HD" },    &g_ps5_settings.hd_textures,   2, { kOnOffEn, kOnOffEs },
                                            hd_textures_available, { "not installed", "no instaladas" } },
     { { "Real shadows", "Sombras reales" },&g_ps5_settings.shadows,       3, { kShadowEn, kShadowEs } },
+    { { "Rumble", "Vibración" },           &g_ps5_settings.rumble,        2, { kOnOffEn, kOnOffEs } },
     { { "Draw distance", "Distancia de objetos" },
                                            &g_ps5_settings.draw_distance, 3, { kDistanceEn, kDistanceEs } },
 };
@@ -141,6 +142,7 @@ static const struct { const char *key; int *value; } kKeys[] = {
     { "aa",       &g_ps5_settings.antialiasing },
     { "resolucion", &g_ps5_settings.resolution },
     { "idioma",     &g_ps5_settings.language },
+    { "vibracion",  &g_ps5_settings.rumble },
 };
 #define KEY_COUNT (int)(sizeof kKeys / sizeof kKeys[0])
 

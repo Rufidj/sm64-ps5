@@ -21,6 +21,7 @@ typedef struct {
     int antialiasing;   /* 0 or 1: supersampled, at 1080p */
     int resolution;     /* 0 1080p, 1 4K */
     int language;       /* 0 English, 1 Spanish: the menus' and the game's text */
+    int rumble;         /* 0 or 1: the pad's motors on the game's own cues */
 } Ps5Settings;
 
 extern Ps5Settings g_ps5_settings;

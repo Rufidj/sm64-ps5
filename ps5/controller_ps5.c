@@ -91,6 +91,11 @@ static void controller_ps5_init(void) {
     s_handle = handle;
 }
 
+/* The open pad, for the rumble (ps5/glue/rumble_ps5.c). */
+int controller_ps5_pad_handle(void) {
+    return s_handle;
+}
+
 /* Maps one stick axis from the pad's 0..255 with 128 at rest onto the N64's
  * -80..80, with a small dead zone so a resting stick reads as still. */
 static int8_t map_stick(unsigned char raw) {

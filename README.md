@@ -86,7 +86,17 @@ Settings are saved.
 | Show FPS | on, off (counter in the top-left corner) |
 | HD textures | on, off (greyed out when no pack is installed) |
 | Real shadows | off, objects, everything |
+| Rumble | on, off |
 | Object draw distance | normal, far, very far |
+
+- **Rumble**
+  - The game's own rumble, from the Shindou version's code: hard landings,
+    ground pounds, damage, bosses, over a hundred cues in all. The US build
+    leaves it turned off; this turns it on.
+  - It drives the DualSense's motors directly, and since they can vary their
+    strength - the Rumble Pak could not - a light bump feels different from a
+    heavy one.
+  - Can be switched off in the options menu.
 
 ### Everything else
 - DualSense controls, sound and saves.
@@ -213,6 +223,7 @@ the path above.
 | HD textures: index by hash of the original texture, PNG loading with stb_image | `ps5/hd_tools/hd_index.py`, `ps5/hd_textures.c` |
 | Asset removal at build time and restoration from the ROM on the console | `ps5/asset_tools/asset_strip.py`, `ps5/asset_loader.c` |
 | DualSense, audio | `ps5/controller_ps5.c`, `ps5/audio_ps5.c` |
+| Rumble: the game's cues on the pad's motors | `ps5/glue/rumble_ps5.c`, `src/game/rumble_init.c` |
 
 **Reflections and shadows.** The scene graph brackets the world and the
 mirrored sky with markers in the display list. `gfx_pc.c` then runs the
@@ -244,6 +255,9 @@ changes are:
 - a larger audio bank table (`src/audio/load.c`);
 - the system allocator path in `src/game/memory.c`;
 - a configurable save file path;
+- the rumble, which the game already had: `ENABLE_RUMBLE` can now be set by the
+  build, and `rumble_init.c` gained a frame-driven update, since the console's
+  port has no thread for it;
 - the hooks the language switch needs (`src/game/ingame_menu.c`,
   `src/menu/star_select.c`), all under `SM64_PS5_LANGUAGE`.
 

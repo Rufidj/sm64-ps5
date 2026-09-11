@@ -49,7 +49,7 @@ python3 "$here/menu_tools/make_font.py" "$here/menu_build/menu_font.h"
 DEFS="-D_LANGUAGE_C -DVERSION_US=1 -DF3DEX_GBI_2E=1 -DNON_MATCHING=1 -DAVOID_UB=1 -DNO_SEGMENTED_MEMORY -DUSE_SYSTEM_MALLOC"
 INCS="-I$root/include -I$root/src -I$root/src/pc -I$root -I$root/build/us_pc -I$root/build/us_pc/include"
 LANG_INCS="-I$here/lang -I$out/lang"
-ENGINE_FLAGS="-g -O2 -fno-strict-aliasing -fwrapv -Wno-everything $DEFS $INCS $LANG_INCS -DWIDESCREEN -DSM64_PS5_REFLECTIONS -DSM64_PS5_HD_TEXTURES -DSM64_PS5_LANGUAGE $EXTRA_CFLAGS"
+ENGINE_FLAGS="-g -O2 -fno-strict-aliasing -fwrapv -Wno-everything $DEFS $INCS $LANG_INCS -DWIDESCREEN -DSM64_PS5_REFLECTIONS -DSM64_PS5_HD_TEXTURES -DSM64_PS5_LANGUAGE -DENABLE_RUMBLE=1 $EXTRA_CFLAGS"
 
 echo ">>> Spanish text"
 mkdir -p "$out/lang"
@@ -76,6 +76,7 @@ done
 echo ">>> glue"
 $CC -O2 -Wno-everything $DEFS $INCS -I"$root/src/pc/controller" -c "$here/glue/controller_entry_point_ps5.c" -o "$out/obj/engine/controller_entry_point_ps5.o"
 $CC -O2 -fno-builtin -c "$here/glue/libc_shims.c" -o "$out/obj/ps5/libc_shims.o"
+$CC $ENGINE_FLAGS -I"$here" -c "$here/glue/rumble_ps5.c" -o "$out/obj/ps5/rumble_ps5.o"
 $CC -O2 -Wno-everything -c "$root/src/pc/gfx/gfx_cc.c" -o "$out/obj/ps5/gfx_cc.o"
 $CC -O2 -Wno-everything $DEFS $INCS -c "$root/src/pc/audio/audio_null.c" -o "$out/obj/ps5/audio_null.o"
 
@@ -83,7 +84,7 @@ echo ">>> PS5 layer"
 LAYER="main_ps5 menu_ps5 hd_textures asset_loader sha1 ps5gpu gfx_agc gfx_ps5 controller_ps5 audio_ps5"
 for f in $LAYER; do
     $CC -O2 -Wall -Wno-unused-function -Wno-sign-compare -Wno-missing-field-initializers \
-        $DEFS -I"$here" $INCS $EXTRA_CFLAGS -c "$here/$f.c" -o "$out/obj/ps5/$f.o" 2>&1 | grep -v "third_party/stb_image.h" | grep -E "error|warning" || true
+        $DEFS -DENABLE_RUMBLE=1 -I"$here" $INCS $EXTRA_CFLAGS -c "$here/$f.c" -o "$out/obj/ps5/$f.o" 2>&1 | grep -v "third_party/stb_image.h" | grep -E "error|warning" || true
     [ "$out/obj/ps5/$f.o" -nt "$here/$f.c" ] || fail "compiling $f.c failed"
 done
 
@@ -93,6 +94,7 @@ objs=""
 for f in $LAYER; do objs="$objs $out/obj/ps5/$f.o"; done
 "$LINK" "$out/sm64_ps5.elf" "$CRT1" $objs "$out/obj/ps5/gfx_cc.o" "$out/obj/ps5/audio_null.o" "$out/obj/ps5/libc_shims.o" \
     "$out/obj/ps5/ps5_lang.o" "$out/obj/ps5/translation_es.o" "$out/obj/ps5/strings_es.o" \
+    "$out/obj/ps5/rumble_ps5.o" \
     "$out"/obj/engine/*.o > "$out/link.log" 2>&1 || { tail -20 "$out/link.log"; fail "linking failed"; }
 [ -s "$out/sm64_ps5.elf" ] || fail "linking produced nothing"
 

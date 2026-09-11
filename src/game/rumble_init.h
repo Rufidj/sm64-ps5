@@ -19,6 +19,9 @@ void reset_rumble_timers(void);
 void reset_rumble_timers_2(s32 a0);
 void func_sh_8024CA04(void);
 void cancel_rumble(void);
+#ifndef TARGET_N64
+void rumble_frame(void);
+#endif
 void create_thread_6(void);
 void rumble_thread_update_vi(void);
 
