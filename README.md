@@ -20,7 +20,11 @@ written in C.
 
 ## What it looks like
 
-Running on the console, at 4K with the HD texture pack installed.
+[![Super Mario 64 running on a PS5](https://img.youtube.com/vi/BNDHSYuKUM8/maxresdefault.jpg)](https://youtu.be/BNDHSYuKUM8)
+
+*Running on the console - click to watch.*
+
+Below, at 4K with the HD texture pack installed.
 
 | | |
 |---|---|

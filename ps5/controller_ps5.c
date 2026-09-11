@@ -56,6 +56,7 @@ extern int scePadReadState(int handle, void *data);
 #define C_STICK_THRESHOLD 64       /* right stick deflection that fires a C button */
 
 static int s_handle = -1;
+static int s_user_id = -1;
 static unsigned char s_sample[1024];
 
 extern bool menu_ps5_blocks_input(void);
@@ -89,11 +90,17 @@ static void controller_ps5_init(void) {
     int handle = scePadOpen(user_id, 0 /* standard port */, 0, 0);
     if (handle < 0) return;
     s_handle = handle;
+    s_user_id = user_id;
 }
 
-/* The open pad, for the rumble (ps5/glue/rumble_ps5.c). */
+/* The open pad and the user it belongs to, for the rumble
+ * (ps5/glue/rumble_ps5.c). */
 int controller_ps5_pad_handle(void) {
     return s_handle;
+}
+
+int controller_ps5_user_id(void) {
+    return s_user_id;
 }
 
 /* Maps one stick axis from the pad's 0..255 with 128 at rest onto the N64's
