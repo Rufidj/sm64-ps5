@@ -481,7 +481,7 @@ A veces chocarás con paredes invisibles en los bordes de los mundos de los cuad
 @DIALOG_070
 Puedes volver al salón principal del castillo cuando quieras desde los mundos de los cuadros.
 
-Solo tienes que pararte, pulsar Start para poner el juego en pausa y elegir 『Salir del mundo』.
+Solo tienes que pararte, pulsar Options para poner el juego en pausa y elegir 『Salir del mundo』.
 
 No hace falta que consigas todas las Estrellas de un mundo antes de pasar al siguiente.
 

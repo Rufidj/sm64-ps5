@@ -71,6 +71,57 @@ MENU = {
 }
 MENU_TOP = {"acute": 0, "tilde": 0, "diaeresis": 1}
 
+# The buttons the dialogues name. The game draws them as bold N64 letters - A,
+# B, C, Z - which no one has on a DualSense, so they are drawn as what the
+# player actually presses (ps5/controller_ps5.c):
+#   [A] cross, [B] square, [C] the right stick, which moves the camera,
+#   [Z] the L shoulders. [R] is left as it is: R already reads as R1 and R2.
+# Each keeps within the width the game advances by, in the same 2-pixel stroke
+# as the letters around it.
+BUTTONS = {
+    0x54: ("cross", [
+        "#.....#.",
+        "##...##.",
+        ".##.##..",
+        "..###...",
+        "...#....",
+        "..###...",
+        ".##.##..",
+        "##...##.",
+        "#.....#.",
+    ], 3),
+    0x55: ("square", [
+        "#######.",
+        "#.....#.",
+        "#.....#.",
+        "#.....#.",
+        "#.....#.",
+        "#.....#.",
+        "#######.",
+    ], 4),
+    0x56: ("stick", [
+        ".####...",
+        "##..##..",
+        "#.##.#..",
+        "#.##.#..",
+        "#....#..",
+        "##..##..",
+        ".####...",
+    ], 4),
+    0x57: ("shoulder_l", [
+        "##......",
+        "##......",
+        "##......",
+        "##......",
+        "##......",
+        "##......",
+        "##......",
+        "##......",
+        "##......",
+        "######..",
+    ], 3),
+}
+
 
 def main_texture(rows, top):
     """A 16 by 8 IA4 texture, 64 bytes, from an upright 8 by 16 drawing."""
@@ -116,8 +167,15 @@ def main(path):
             emit(out, "ps5_mark_main_" + name, main_texture(rows, MAIN_TOP[name]))
         for name, rows in MENU.items():
             emit(out, "ps5_mark_menu_" + name, menu_texture(rows, MENU_TOP[name]))
+        for code, (name, rows, top) in sorted(BUTTONS.items()):
+            emit(out, "ps5_button_" + name, main_texture(rows, top))
+        out.write("/* The character each one replaces, for ps5_lang.c. */\n"
+                  "static const struct { u8 code; const u8 *glyph; } ps5_buttons[] = {\n")
+        for code, (name, _rows, _top) in sorted(BUTTONS.items()):
+            out.write("    { 0x%02X, ps5_button_%s },\n" % (code, name))
+        out.write("};\n\n")
         out.write("#endif\n")
-    print("%s: %d marks" % (path, len(MAIN) + len(MENU)))
+    print("%s: %d marks, %d buttons" % (path, len(MAIN) + len(MENU), len(BUTTONS)))
 
 
 if __name__ == "__main__":

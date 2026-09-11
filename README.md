@@ -58,6 +58,11 @@ written in C.
     own ones, the way the European versions do it. The inverted question and
     exclamation marks are made on the console from the player's own ROM.
   - The translation is ours: see `ps5/lang/`.
+- **The buttons the game names are the DualSense's**
+  - Where the game drew the N64's A, B, C and Z, it draws cross, square, the
+    right stick and L, matching what the port maps them to. R is left alone: it
+    already reads as R1 and R2.
+  - Drawn in the same stroke as the letters around them, in both languages.
 - **Longer object draw distance**
   - Objects stay visible up to three times farther away.
   - Only drawing is extended: objects still behave exactly as in the original.
@@ -218,6 +223,12 @@ frame's display list up to four times:
 
 Water samples the reflection. Every opaque surface gets a second, blended pass
 that reads the shadow map.
+
+**The game's fonts are not complete.** The coloured HUD font in the US ROM has
+only the letters English needs: no J, Q, V, X or Z, and no accents. A character
+a font does not have is a null pointer the graphics processor then reads from,
+which takes the console down. `make_strings.py` therefore reads the game's own
+font tables and refuses to build a string its font cannot draw.
 
 **The Spanish text.** `ps5/lang/text_es/` holds the translation, written as
 flowing paragraphs; `wrap_es.py` measures it with the game's own character

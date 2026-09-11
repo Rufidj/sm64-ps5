@@ -5,13 +5,16 @@
 # only use A to Z and digits: no accents there. The rest may use them.
 # Keep each one about as wide as the English, or it will run past its place.
 
-# File select, in the HUD font
+# File select, in the coloured HUD font. That font only has the letters the
+# English text needs: it has no J, Q, V, X or Z, and no accents. Asking it for
+# one of those draws from nothing and crashes the console, so make_strings.py
+# checks these lines against the font itself.
 TEXT_SELECT_FILE = ELIGE PARTIDA
-TEXT_CHECK_FILE = VER PARTIDA
+TEXT_CHECK_FILE = MIRAR PARTIDA
 TEXT_COPY_FILE = COPIAR
 TEXT_ERASE_FILE = BORRAR
 TEXT_SOUND_SELECT = SONIDO
-TEXT_NEW = NUEVO
+TEXT_NEW = LIBRE
 TEXT_HUD_HI_SCORE = RECORD
 TEXT_HUD_CONGRATULATIONS = ENHORABUENA
 TEXT_PAUSE = PAUSA
@@ -20,7 +23,7 @@ TEXT_PAUSE = PAUSA
 TEXT_SCORE = PUNTOS
 TEXT_COPY = COPIAR
 TEXT_ERASE = BORRAR
-TEXT_CHECK_SCORE = VER PUNTOS
+TEXT_CHECK_SCORE = MIRAR PUNTOS
 TEXT_COPY_FILE_BUTTON = COPIAR PARTIDA
 TEXT_ERASE_FILE_BUTTON = BORRAR PARTIDA
 TEXT_STEREO = ESTEREO

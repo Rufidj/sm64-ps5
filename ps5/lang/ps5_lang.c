@@ -203,6 +203,17 @@ static const u8 *mark_menu(u8 mark) {
 s32 ps5_lang_main_glyph(u8 c, const void **glyph, const void **mark) {
     struct SpanishLetter *l;
     void **fontLUT;
+    s32 i;
+
+    /* The buttons a dialogue names are the N64's letters in the game's font.
+     * They are drawn as what the player actually holds, in both languages. */
+    for (i = 0; i < (s32) (sizeof(ps5_buttons) / sizeof(ps5_buttons[0])); i++) {
+        if (ps5_buttons[i].code == c) {
+            *glyph = ps5_buttons[i].glyph;
+            *mark = NULL;
+            return TRUE;
+        }
+    }
 
     if (c < ES_FIRST || c >= ES_LAST) return FALSE;
     if (!sMainMade) make_main_glyphs();
@@ -217,7 +228,9 @@ s32 ps5_lang_main_glyph(u8 c, const void **glyph, const void **mark) {
         case ES_INVERTED_EXCLAMATION:*glyph = sMainExclamation; break;
         default:                     *glyph = segmented_to_virtual(fontLUT[l->letter]); break;
     }
-    return TRUE;
+    /* A font without that letter would leave the graphics processor reading
+     * from nothing, so the character is simply skipped instead. */
+    return *glyph != NULL;
 }
 
 s32 ps5_lang_menu_glyph(u8 c, const void **glyph, const void **mark) {
@@ -242,7 +255,7 @@ s32 ps5_lang_menu_glyph(u8 c, const void **glyph, const void **mark) {
                                                  : l->letter]);
             break;
     }
-    return TRUE;
+    return *glyph != NULL;
 }
 
 void *ps5_lang_dialog_table(void) {
