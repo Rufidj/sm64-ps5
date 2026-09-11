@@ -371,23 +371,19 @@ static void idle_overlay(void) {
          * the whole frame, and what each run drew. */
         extern double gfx_perf_ms[3], ps5gpu_perf_wait_ms, ps5gpu_perf_frame_ms;
         extern unsigned gfx_perf_tris[3], ps5gpu_perf_draws;
-        extern int gPs5RumbleCalls, gPs5RumbleLastResult, gPs5RumbleMode;
-        extern int controller_ps5_pad_handle(void);
-        char lines[3][128];
+        char lines[2][128];
         snprintf(lines[0], sizeof lines[0], "ms  sombras %.1f  reflejo %.1f  normal %.1f  espera %.1f  frame %.1f",
                  gfx_perf_ms[0], gfx_perf_ms[1], gfx_perf_ms[2], ps5gpu_perf_wait_ms, ps5gpu_perf_frame_ms);
         snprintf(lines[1], sizeof lines[1], "tri  sombras %u  reflejo %u  normal %u   draws %u",
                  gfx_perf_tris[0], gfx_perf_tris[1], gfx_perf_tris[2], ps5gpu_perf_draws);
-        snprintf(lines[2], sizeof lines[2], "vibra  mando %d  modo %d  llamadas %d  ultimo %d",
-                 controller_ps5_pad_handle(), gPs5RumbleMode, gPs5RumbleCalls, gPs5RumbleLastResult);
         float w = text_width(label, 0.8f);
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             if (text_width(lines[i], 0.7f) > w) w = text_width(lines[i], 0.7f);
         }
         float line = MENU_FONT_CELL_H * 0.7f;
-        panel(24.0f, 20.0f, 24.0f + w + 32.0f, 20.0f + MENU_FONT_CELL_H * 0.8f + 3.0f * line + 16.0f, 0xA0000000u);
+        panel(24.0f, 20.0f, 24.0f + w + 32.0f, 20.0f + MENU_FONT_CELL_H * 0.8f + 2.0f * line + 16.0f, 0xA0000000u);
         text(40.0f, 26.0f, label, 0.8f, COLOUR_TITLE);
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             text(40.0f, 26.0f + MENU_FONT_CELL_H * 0.8f + 4.0f + i * line, lines[i], 0.7f, COLOUR_TEXT);
         }
         ps5gpu_set_overlay(s_verts, s_vert_count, s_font_texture);

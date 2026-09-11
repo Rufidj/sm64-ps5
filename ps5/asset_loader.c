@@ -139,27 +139,27 @@ const char *asset_loader_error(void) {
 int asset_loader_restore_into(const uint8_t *map, size_t map_size, uint8_t *rom, size_t rom_size,
                               int use_anchor, uintptr_t base, int protect) {
     if (map_size < MAP_HEADER || memcmp(map, "SM64AMAP", 8) != 0 || le32(map + 8) != MAP_VERSION) {
-        s_error = "sm64: sm64_assets.map no es valido";
+        s_error = "sm64: sm64_assets.map is not valid";
         return -1;
     }
     uint32_t entry_count = le32(map + 12), segment_count = le32(map + 16), anchor = le32(map + 20);
     uint32_t rodata_addr = le32(map + 24), rodata_size = le32(map + 28);
     const uint8_t *rom_sha1 = map + 32;
     if ((use_anchor && anchor == RAW) || (uint64_t)MAP_HEADER + 4ull * segment_count + 16ull * entry_count > map_size) {
-        s_error = "sm64: sm64_assets.map esta incompleto";
+        s_error = "sm64: sm64_assets.map is incomplete";
         return -1;
     }
     const uint8_t *segments = map + MAP_HEADER;
     const uint8_t *entries = segments + 4u * segment_count;
 
     if (rom_size != ROM_SIZE || normalise_rom(rom, rom_size) != 0) {
-        s_error = "sm64: data/sm64_ps5/baserom.us.z64 no es una ROM de SM64";
+        s_error = "sm64: data/sm64_ps5/baserom.us.z64 is not an SM64 ROM";
         return -1;
     }
     uint8_t digest[20];
     sha1(rom, rom_size, digest);
     if (memcmp(digest, rom_sha1, 20) != 0) {
-        s_error = "sm64: la ROM no es la version US de Super Mario 64";
+        s_error = "sm64: the ROM is not the US version of Super Mario 64";
         return -1;
     }
 
@@ -167,7 +167,7 @@ int asset_loader_restore_into(const uint8_t *map, size_t map_size, uint8_t *rom,
     uintptr_t ro_start = (base + rodata_addr) & ~(uintptr_t)(PAGE - 1);
     uintptr_t ro_end = (base + rodata_addr + rodata_size + PAGE - 1) & ~(uintptr_t)(PAGE - 1);
     if (protect && mprotect((void *)ro_start, ro_end - ro_start, PROT_READ | PROT_WRITE) != 0) {
-        s_error = "sm64: no se pudo abrir .rodata para escribir";
+        s_error = "sm64: .rodata could not be made writable";
         return -1;
     }
 
@@ -179,7 +179,7 @@ int asset_loader_restore_into(const uint8_t *map, size_t map_size, uint8_t *rom,
         const uint8_t *e = entries + 16u * i;
         uint32_t source = le32(e + 8), length = le32(e + 4), offset = le32(e + 12);
         if (source != RAW && source != RAW_SWAP16 && source != RAW_SWAP32) continue;
-        if ((uint64_t)offset + length > rom_size) { s_error = "sm64: el mapa sale de la ROM"; result = -1; break; }
+        if ((uint64_t)offset + length > rom_size) { s_error = "sm64: the map points past the end of the ROM"; result = -1; break; }
         uint8_t *dst = (uint8_t *)(base + le32(e));
         const uint8_t *src = rom + offset;
         if (source == RAW) {
@@ -201,12 +201,12 @@ int asset_loader_restore_into(const uint8_t *map, size_t map_size, uint8_t *rom,
     for (uint32_t s = 0; s < segment_count && result == 0; s++) {
         uint32_t seg_size = 0;
         uint8_t *seg = mio0_decode(rom, rom_size, le32(segments + 4u * s), &seg_size);
-        if (!seg) { s_error = "sm64: un segmento comprimido de la ROM esta danado"; result = -1; break; }
+        if (!seg) { s_error = "sm64: a compressed segment of the ROM is damaged"; result = -1; break; }
         for (uint32_t i = 0; i < entry_count; i++) {
             const uint8_t *e = entries + 16u * i;
             uint32_t length = le32(e + 4), offset = le32(e + 12);
             if (le32(e + 8) != s) continue;
-            if ((uint64_t)offset + length > seg_size) { s_error = "sm64: el mapa sale de un segmento"; result = -1; break; }
+            if ((uint64_t)offset + length > seg_size) { s_error = "sm64: the map points past the end of a segment"; result = -1; break; }
             memcpy((void *)(base + le32(e)), seg + offset, length);
         }
         free(seg);
@@ -224,7 +224,7 @@ int asset_loader_restore(void) {
     int result = -1;
     uint8_t *rom = read_whole(ROM_PATH, ROM_SIZE, &rom_size);
     if (!rom)
-        s_error = "sm64: falta la ROM en data/sm64_ps5/baserom.us.z64";
+        s_error = "sm64: the ROM is missing from data/sm64_ps5/baserom.us.z64";
     else
         result = asset_loader_restore_into(map, map_size, rom, rom_size, 1, 0, 1);
 

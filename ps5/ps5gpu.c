@@ -69,7 +69,7 @@ typedef struct {
 static unsigned char dcb_out_of_space(DcbState *st, unsigned int size, void *ud) {
     (void)st; (void)size; (void)ud;
     static int s_reported;
-    if (!s_reported) { s_reported = 1; ps5gpu_notify("ps5gpu: bufer de comandos lleno"); }
+    if (!s_reported) { s_reported = 1; ps5gpu_notify("ps5gpu: the command buffer is full"); }
     return 0;
 }
 
@@ -242,7 +242,7 @@ static void *arena_take(unsigned long bytes, unsigned long align) {
     unsigned long base = (G.arena_used + align - 1) / align * align;
     if (base + bytes > G.arena[G.slot].size) {              /* frame overflowed */
         static int s_reported;
-        if (!s_reported) { s_reported = 1; ps5gpu_notify("ps5gpu: arena del fotograma llena"); }
+        if (!s_reported) { s_reported = 1; ps5gpu_notify("ps5gpu: the frame's arena is full"); }
         return 0;
     }
     G.arena_used = base + bytes;

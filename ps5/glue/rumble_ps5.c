@@ -51,11 +51,6 @@ static volatile int32_t sLarge, sSmall;
 
 static int sPort = -1;
 
-/* For the diagnostics overlay. */
-s32 gPs5RumbleCalls;
-s32 gPs5RumbleLastResult = -99;
-s32 gPs5RumbleMode = -99;
-
 /* A triangle, which the coils take as well as a sine and needs no maths.
  * phase runs over a whole turn of 65536. */
 static int32_t triangle(uint32_t phase) {
@@ -81,7 +76,7 @@ static void *vibration_thread(UNUSED void *unused) {
             left_phase += left_step;
             right_phase += right_step;
         }
-        gPs5RumbleLastResult = sceAudioOutOutput(sPort, grain);
+        sceAudioOutOutput(sPort, grain);      /* returns once the grain has played */
     }
     return NULL;
 }
@@ -95,7 +90,6 @@ static void open_port(void) {
     }
     sceAudioOutInit();
     sPort = sceAudioOutOpen(user, PORT_VIBRATION, 0, GRAIN, RATE, FORMAT_S16_STEREO);
-    gPs5RumbleMode = sPort;
     if (sPort < 0) {
         return;
     }
@@ -108,9 +102,6 @@ static void set_levels(int32_t large, int32_t small) {
     open_port();
     sLarge = large;
     sSmall = small;
-    if (large != 0 || small != 0) {
-        gPs5RumbleCalls++;
-    }
 }
 
 /* Whether there is a rumble pak: there always is, and the game reads anything
@@ -140,11 +131,6 @@ s32 osMotorStart(UNUSED void *pfs) {
 s32 osMotorStop(UNUSED void *pfs) {
     set_levels(0, 0);
     return 0;
-}
-
-/* Drives the coils straight from here, with the game left out of it. */
-void ps5_rumble_selftest(s32 on) {
-    set_levels(on ? 200 : 0, on ? 160 : 0);
 }
 
 #endif

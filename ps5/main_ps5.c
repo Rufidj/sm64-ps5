@@ -123,18 +123,6 @@ static void produce_one_frame(void) {
      * second and the rumble was written for 60, so it gets two turns. */
     rumble_frame();
     rumble_frame();
-#ifdef SM64_PS5_PERF
-    /* A second of the motors at the start, driven straight from the port, to
-     * tell a library problem from a game-path problem. */
-    {
-        extern void ps5_rumble_selftest(s32 on);
-        static s32 frames;
-        if (frames <= 60) {
-            ps5_rumble_selftest(frames < 60);
-            frames++;
-        }
-    }
-#endif
 
     int samples_left = audio_api->buffered();
     u32 num_audio_samples = samples_left < audio_api->get_desired_buffered() ? SAMPLES_HIGH : SAMPLES_LOW;
@@ -181,17 +169,14 @@ static void check_save_folder(void) {
         unlink(SAVE_PROBE);
     }
 
-    if (found)
-        ps5gpu_notify(writable ? "sm64: partida encontrada (se puede guardar)"
-                               : "sm64: partida encontrada (sin permiso para guardar)");
-    else
-        ps5gpu_notify(writable ? "sm64: sin partida guardada (se puede guardar)"
-                               : "sm64: sin partida guardada ni permiso para guardar");
+    /* Only worth saying when the folder will not take a save: the player would
+     * otherwise lose a session's progress without warning. */
+    if (!writable)
+        ps5gpu_notify("sm64: the save folder is read-only, progress cannot be kept");
+    (void) found;
 }
 
 int main(void) {
-    ps5gpu_notify("sm64: arrancando");
-
     /* A shareable build carries no ROM data; it is copied back here, from the
      * player's own ROM, before anything reads it. */
     if (asset_loader_restore() < 0) {
@@ -213,7 +198,7 @@ int main(void) {
      * still runs without it. */
     audio_api = &audio_ps5;
     if (!audio_api->init()) {
-        ps5gpu_notify("sm64: sin audio (no se pudo abrir la salida)");
+        ps5gpu_notify("sm64: no sound (the audio output would not open)");
         audio_api = &audio_null;
     }
     audio_init();
@@ -222,7 +207,6 @@ int main(void) {
     thread5_game_loop(NULL);
     inited = 1;
 
-    ps5gpu_notify("sm64: entrando al bucle");
     gfx_ps5_api.main_loop(produce_one_frame);
     return 0;
 }

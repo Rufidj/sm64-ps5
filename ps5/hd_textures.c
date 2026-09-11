@@ -119,7 +119,6 @@ void hd_textures_init(void) {
         struct stat st;
         if (stat(probe, &st) == 0) { s_root = kRoots[r]; break; }
     }
-    if (s_root) ps5gpu_notify("sm64: texturas HD encontradas");
 }
 
 bool hd_textures_available(void) {

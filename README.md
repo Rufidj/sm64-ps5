@@ -113,9 +113,11 @@ Settings are saved.
   - The game's own rumble, from the Shindou version's code: hard landings,
     ground pounds, damage, bosses, over a hundred cues in all. The US build
     leaves it turned off; this turns it on.
-  - It drives the DualSense's motors directly, and since they can vary their
-    strength - the Rumble Pak could not - a light bump feels different from a
-    heavy one.
+  - The DualSense has no rumble motors, so it is played through the pad's
+    vibration channel as sound, one tone in each voice coil.
+  - The Rumble Pak had a single speed and pulsed it to suggest strength. Here
+    the strength the game asks for becomes the amplitude, so a light bump feels
+    different from a heavy landing.
   - Can be switched off in the options menu.
 
 ### Everything else
@@ -243,7 +245,7 @@ the path above.
 | HD textures: index by hash of the original texture, PNG loading with stb_image | `ps5/hd_tools/hd_index.py`, `ps5/hd_textures.c` |
 | Asset removal at build time and restoration from the ROM on the console | `ps5/asset_tools/asset_strip.py`, `ps5/asset_loader.c` |
 | DualSense, audio | `ps5/controller_ps5.c`, `ps5/audio_ps5.c` |
-| Rumble: the game's cues on the pad's motors | `ps5/glue/rumble_ps5.c`, `src/game/rumble_init.c` |
+| Rumble: the game's cues through the pad's vibration channel | `ps5/glue/rumble_ps5.c`, `src/game/rumble_init.c` |
 
 **Reflections and shadows.** The scene graph brackets the world and the
 mirrored sky with markers in the display list. `gfx_pc.c` then runs the

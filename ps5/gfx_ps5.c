@@ -38,7 +38,6 @@ static void gfx_ps5_init(const char *game_name, bool start_in_fullscreen) {
      * a second, as the SDL backend enforces. At the display's 60 it would run
      * at double speed, so every frame is held for two vertical blanks. */
     ps5gpu_set_frame_interval(2);
-    ps5gpu_notify("ps5gpu: listo");
 }
 
 static void gfx_ps5_set_keyboard_callbacks(bool (*on_key_down)(int), bool (*on_key_up)(int), void (*on_all_keys_up)(void)) {

@@ -908,15 +908,15 @@ static void gfx_agc_init(void) {
     s_material_program[MATERIAL_WATER] = ps5gpu_program_new(water_p_sb, water_p_sb_len);
     s_material_program[MATERIAL_LAVA] = ps5gpu_program_new(lava_p_sb, lava_p_sb_len);
     if (!s_material_program[MATERIAL_WATER] || !s_material_program[MATERIAL_LAVA])
-        ps5gpu_notify("gfx_agc: no se pudo crear un programa de agua o lava");
+        ps5gpu_notify("gfx_agc: the water or lava program could not be created");
     s_reflect_program = ps5gpu_program_new(water_reflect_p_sb, water_reflect_p_sb_len);
     s_reflect_program_1x = ps5gpu_program_new(water_reflect_1x_p_sb, water_reflect_1x_p_sb_len);
     if (!s_reflect_program)
-        ps5gpu_notify("gfx_agc: no se pudo crear el programa de reflejos");
+        ps5gpu_notify("gfx_agc: the reflection program could not be created");
     s_shadow_depth_program = ps5gpu_program_new(shadow_depth_p_sb, shadow_depth_p_sb_len);
     s_shadow_receive_program = ps5gpu_program_new(shadow_recv_p_sb, shadow_recv_p_sb_len);
     if (!s_shadow_depth_program || !s_shadow_receive_program)
-        ps5gpu_notify("gfx_agc: no se pudieron crear los programas de sombras");
+        ps5gpu_notify("gfx_agc: the shadow programs could not be created");
     remember_material_texture(texture_waterbox_water, MATERIAL_WATER);
     remember_material_texture(texture_waterbox_jrb_water, MATERIAL_WATER);
     remember_material_texture(texture_waterbox_unknown_water, MATERIAL_WATER);
