@@ -18,6 +18,22 @@ written in C.
 
 ---
 
+## What it looks like
+
+Running on the console, at 4K with the HD texture pack installed.
+
+| | |
+|---|---|
+| ![The castle grounds](evidence/1.jpg) | ![The moat](evidence/2.jpg) |
+| The castle grounds: real shadows, and the frame counter the options menu can show. | The moat, with the world mirrored in the water. |
+
+![A sign in Spanish](evidence/3.jpg)
+
+The game in Spanish, accents and inverted marks included - drawn over the
+ROM's own letters, since the US font has none of them.
+
+---
+
 ## Features
 
 ### Graphics

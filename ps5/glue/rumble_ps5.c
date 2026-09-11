@@ -28,18 +28,45 @@ typedef struct {
 } ScePadVibrationParam;
 
 extern int scePadSetVibration(int handle, const ScePadVibrationParam *param);
+/* How hard the motors may be driven: 1 is their full range, 2 the range an
+ * earlier controller had. Set once, the first time the motors are used. */
+extern int scePadSetVibrationMode(int handle, int mode);
 extern int controller_ps5_pad_handle(void);
 
+/* What the last calls did, for the diagnostics overlay. */
+s32 gPs5RumbleCalls;
+s32 gPs5RumbleLastResult = -99;
+s32 gPs5RumbleMode = -99;
+
 static int set_motors(unsigned char large, unsigned char small) {
+    static s32 sModeSet;
     ScePadVibrationParam param;
     int handle = controller_ps5_pad_handle();
+    int result;
 
     if (handle < 0) {
+        gPs5RumbleLastResult = -2;
         return -1;
+    }
+    if (!sModeSet) {
+        sModeSet = TRUE;
+        gPs5RumbleMode = scePadSetVibrationMode(handle, 1);
     }
     param.largeMotor = large;
     param.smallMotor = small;
-    return scePadSetVibration(handle, &param) < 0 ? -1 : 0;
+    result = scePadSetVibration(handle, &param);
+    gPs5RumbleLastResult = result;
+    if (large != 0 || small != 0) {
+        gPs5RumbleCalls++;
+    }
+    return result < 0 ? -1 : 0;
+}
+
+/* Drives the motors straight from here, with the game left out of it: if this
+ * is felt and the game's own rumble is not, the fault is in the path between
+ * them rather than in the console's own library. */
+void ps5_rumble_selftest(s32 on) {
+    set_motors(on ? 200 : 0, on ? 160 : 0);
 }
 
 /* The strength the game is asking for, as the motors take it. Its own scale

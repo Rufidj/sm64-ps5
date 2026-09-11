@@ -45,6 +45,9 @@ Ps5Settings g_ps5_settings = { PS5_ASPECT_16_9, 1, 2, 1, 1, 2, 0, 1, 1, 0, PS5_L
  * second. The game's own text is switched by ps5/lang/ps5_lang.c. */
 #define LANG (g_ps5_settings.language)
 extern void ps5_lang_set(int language);
+/* The game's own rumble queue (src/game/rumble_init.c), used here to buzz the
+ * pad once when the player switches the rumble on. */
+extern void queue_rumble_data(short duration, short strength);
 
 static const float kSkyStrength[] = { 0.0f, 0.15f, 0.35f, 0.6f, 1.0f };
 
@@ -368,19 +371,25 @@ static void idle_overlay(void) {
          * the whole frame, and what each run drew. */
         extern double gfx_perf_ms[3], ps5gpu_perf_wait_ms, ps5gpu_perf_frame_ms;
         extern unsigned gfx_perf_tris[3], ps5gpu_perf_draws;
-        char times[128], counts[128];
-        snprintf(times, sizeof times, "ms  sombras %.1f  reflejo %.1f  normal %.1f  espera %.1f  frame %.1f",
+        extern int gPs5RumbleCalls, gPs5RumbleLastResult, gPs5RumbleMode;
+        extern int controller_ps5_pad_handle(void);
+        char lines[3][128];
+        snprintf(lines[0], sizeof lines[0], "ms  sombras %.1f  reflejo %.1f  normal %.1f  espera %.1f  frame %.1f",
                  gfx_perf_ms[0], gfx_perf_ms[1], gfx_perf_ms[2], ps5gpu_perf_wait_ms, ps5gpu_perf_frame_ms);
-        snprintf(counts, sizeof counts, "tri  sombras %u  reflejo %u  normal %u   draws %u",
+        snprintf(lines[1], sizeof lines[1], "tri  sombras %u  reflejo %u  normal %u   draws %u",
                  gfx_perf_tris[0], gfx_perf_tris[1], gfx_perf_tris[2], ps5gpu_perf_draws);
-        float w = text_width(times, 0.7f);
-        if (text_width(counts, 0.7f) > w) w = text_width(counts, 0.7f);
-        if (text_width(label, 0.8f) > w) w = text_width(label, 0.8f);
+        snprintf(lines[2], sizeof lines[2], "vibra  mando %d  modo %d  llamadas %d  ultimo %d",
+                 controller_ps5_pad_handle(), gPs5RumbleMode, gPs5RumbleCalls, gPs5RumbleLastResult);
+        float w = text_width(label, 0.8f);
+        for (int i = 0; i < 3; i++) {
+            if (text_width(lines[i], 0.7f) > w) w = text_width(lines[i], 0.7f);
+        }
         float line = MENU_FONT_CELL_H * 0.7f;
-        panel(24.0f, 20.0f, 24.0f + w + 32.0f, 20.0f + MENU_FONT_CELL_H * 0.8f + 2.0f * line + 16.0f, 0xA0000000u);
+        panel(24.0f, 20.0f, 24.0f + w + 32.0f, 20.0f + MENU_FONT_CELL_H * 0.8f + 3.0f * line + 16.0f, 0xA0000000u);
         text(40.0f, 26.0f, label, 0.8f, COLOUR_TITLE);
-        text(40.0f, 26.0f + MENU_FONT_CELL_H * 0.8f + 4.0f, times, 0.7f, COLOUR_TEXT);
-        text(40.0f, 26.0f + MENU_FONT_CELL_H * 0.8f + 4.0f + line, counts, 0.7f, COLOUR_TEXT);
+        for (int i = 0; i < 3; i++) {
+            text(40.0f, 26.0f + MENU_FONT_CELL_H * 0.8f + 4.0f + i * line, lines[i], 0.7f, COLOUR_TEXT);
+        }
         ps5gpu_set_overlay(s_verts, s_vert_count, s_font_texture);
         return;
     }
@@ -439,6 +448,9 @@ bool menu_ps5_update(void) {
             *r->value = (*r->value + step) % r->count;
             s_changed = true;
             apply_settings();
+            if (r->value == &g_ps5_settings.rumble && g_ps5_settings.rumble) {
+                queue_rumble_data(30, 80);
+            }
         }
     }
 

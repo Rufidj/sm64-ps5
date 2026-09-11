@@ -2,6 +2,7 @@
 #include <string.h>
 #include "lib/src/libultra_internal.h"
 #include "macros.h"
+#include "config.h"
 
 #ifdef TARGET_WEB
 #include <emscripten.h>
@@ -195,6 +196,10 @@ s32 osEepromLongWrite(UNUSED OSMesgQueue *mq, u8 address, u8 *buffer, int nbytes
 
 s32 gNumVblanks;
 
+/* With the rumble on, the port drives motors of its own and defines these
+ * itself (ps5/glue/rumble_ps5.c on the console). These stand in when it is
+ * off, so the game links either way. */
+#if !ENABLE_RUMBLE
 s32 osMotorInit(UNUSED OSMesgQueue *mq, UNUSED void *pfs, UNUSED int channel) {
     return 0;
 }
@@ -206,6 +211,7 @@ s32 osMotorStart(UNUSED void *pfs) {
 s32 osMotorStop(UNUSED void *pfs) {
     return 0;
 }
+#endif
 
 OSPiHandle *osCartRomInit(void) {
     static OSPiHandle handle;

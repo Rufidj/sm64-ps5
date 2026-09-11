@@ -123,6 +123,18 @@ static void produce_one_frame(void) {
      * second and the rumble was written for 60, so it gets two turns. */
     rumble_frame();
     rumble_frame();
+#ifdef SM64_PS5_PERF
+    /* A second of the motors at the start, driven straight from the port, to
+     * tell a library problem from a game-path problem. */
+    {
+        extern void ps5_rumble_selftest(s32 on);
+        static s32 frames;
+        if (frames <= 60) {
+            ps5_rumble_selftest(frames < 60);
+            frames++;
+        }
+    }
+#endif
 
     int samples_left = audio_api->buffered();
     u32 num_audio_samples = samples_left < audio_api->get_desired_buffered() ? SAMPLES_HIGH : SAMPLES_LOW;
