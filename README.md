@@ -20,7 +20,7 @@ written in C.
 
 ## What it looks like
 
-[![Super Mario 64 running on a PS5](https://img.youtube.com/vi/BNDHSYuKUM8/maxresdefault.jpg)](https://youtu.be/BNDHSYuKUM8)
+[![Super Mario 64 running on a PS5](https://img.youtube.com/vi/UqceQ2bQo0A/maxresdefault.jpg)](https://youtu.be/UqceQ2bQo0A)
 
 *Running on the console - click to watch.*
 
